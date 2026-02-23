@@ -22,6 +22,10 @@ export function BudgetApp() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
+  useEffect(() => {
+    document.body.style.backgroundColor = isDark ? '#030712' : '#ffffff';
+  }, [isDark]);
+
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0);
 
   // Fetch all initial data on mount
