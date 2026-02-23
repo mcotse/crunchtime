@@ -67,6 +67,7 @@ Open [http://localhost:5173](http://localhost:5173). In dev mode, auth is skippe
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `PORT` | Server port | No (default: `3000`) |
+| `DB_PATH` | Absolute path to the SQLite database file | No (default: `crunchtime.db` in CWD) |
 | `CF_TEAM_DOMAIN` | Cloudflare Access team domain — enables JWT auth | No |
 
 When `CF_TEAM_DOMAIN` is not set, the server runs in dev mode (no auth check, first member assumed).
@@ -87,23 +88,33 @@ All routes are under `/api` and protected by auth middleware in production.
 
 ## Deployment
 
-1. Build the client bundle and compile the server:
+The Makefile handles the full production lifecycle:
+
+```bash
+make deploy   # stop any running instance, build, and start server + Cloudflare tunnel
+make build    # build only (tsc + vite)
+make stop     # kill the server and tunnel processes
+```
+
+`make deploy` runs `scripts/start-prod.sh`, which starts the compiled server and the `cloudflared` tunnel as background processes. Press `Ctrl+C` to stop both.
+
+### First-time setup
+
+1. Configure `scripts/start-prod.sh` with your `DB_PATH`, `CF_TEAM_DOMAIN`, and `PORT`.
+
+2. Seed production members into the database:
 
    ```bash
-   npm run build
+   npx tsx server/seed-prod.ts
    ```
 
-2. Set `CF_TEAM_DOMAIN` to your Cloudflare Access team domain.
-
-3. Run the compiled server:
+3. Deploy:
 
    ```bash
-   node dist/server/index.js
+   make deploy
    ```
 
-   The server serves the built client from `dist/client` and exposes the API on the same port.
-
-Members are looked up by the email in the Cloudflare Access JWT. Add members to the database with matching emails before deploying.
+Members are looked up by the email in the Cloudflare Access JWT. The DB email list and the Cloudflare Access email whitelist must be kept in sync manually.
 
 ## Scripts
 
@@ -111,7 +122,10 @@ Members are looked up by the email in the Cloudflare Access JWT. Add members to 
 |---------|-------------|
 | `npm run dev:server` | Start API server with hot reload |
 | `npm run dev:client` | Start Vite dev server |
-| `npm run build` | Build for production |
+| `npm run build` | Build for production (tsc + vite) |
 | `npm run seed` | Seed database with sample data |
 | `npm test` | Run Vitest tests |
 | `npm run test:watch` | Run tests in watch mode |
+| `make deploy` | Build and start server + Cloudflare tunnel |
+| `make build` | Build only |
+| `make stop` | Stop server and tunnel |
