@@ -1,26 +1,47 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
-import { Member } from '../data/mockData';
+import { Member, Transaction } from '../data/mockData';
 interface AddTransactionSheetProps {
   isOpen: boolean;
   onClose: () => void;
   members: Member[];
   onAdd: (transaction: any) => void;
+  editingTransaction?: Transaction | null;
+  onUpdate?: (id: string, transaction: any) => void;
 }
 export function AddTransactionSheet({
   isOpen,
   onClose,
   members,
-  onAdd
+  onAdd,
+  editingTransaction,
+  onUpdate
 }: AddTransactionSheetProps) {
+  const isEditMode = !!editingTransaction;
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedMember, setSelectedMember] = useState(members[0].id);
+  const [selectedMember, setSelectedMember] = useState(members[0]?.id ?? '');
   const [type, setType] = useState<'expense' | 'income'>('expense');
   const [showErrors, setShowErrors] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && editingTransaction) {
+      setAmount(String(Math.abs(editingTransaction.amount)));
+      setDescription(editingTransaction.description);
+      setSelectedMember(editingTransaction.memberId);
+      setType(editingTransaction.amount >= 0 ? 'income' : 'expense');
+      setShowErrors(false);
+    } else if (isOpen && !editingTransaction) {
+      setAmount('');
+      setDescription('');
+      setSelectedMember(members[0]?.id ?? '');
+      setType('expense');
+      setShowErrors(false);
+    }
+  }, [isOpen, editingTransaction]);
   const amountRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const isValid =
@@ -28,7 +49,7 @@ export function AddTransactionSheet({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid) return;
-    onAdd({
+    const payload = {
       amount:
       type === 'expense' ?
       -Math.abs(parseFloat(amount)) :
@@ -37,7 +58,12 @@ export function AddTransactionSheet({
       memberId: selectedMember,
       date: new Date().toISOString(),
       category: 'General',
-    });
+    };
+    if (isEditMode && onUpdate && editingTransaction) {
+      onUpdate(editingTransaction.id, payload);
+    } else {
+      onAdd(payload);
+    }
     setAmount('');
     setDescription('');
     setShowErrors(false);
@@ -94,7 +120,7 @@ export function AddTransactionSheet({
 
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
               <h2 className="text-xl font-bold dark:text-white">
-                New Transaction
+                {isEditMode ? 'Edit Transaction' : 'New Transaction'}
               </h2>
               <button
               onClick={onClose}
@@ -221,7 +247,7 @@ export function AddTransactionSheet({
               onClick={handleCTAClick}
               className="w-full h-14 text-lg bg-black dark:bg-white text-white dark:text-black rounded-xl">
 
-                Add Transaction
+                {isEditMode ? 'Update' : 'Add Transaction'}
               </Button>
             </div>
           </motion.div>
