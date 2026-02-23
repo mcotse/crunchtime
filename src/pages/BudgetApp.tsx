@@ -55,13 +55,19 @@ export function BudgetApp() {
     return () => es.close();
   }, []);
 
-  // POST new transaction; SSE will deliver the updated state
+  // POST new transaction then immediately sync state; SSE handles other clients
   const handleAddTransaction = async (data: Omit<Transaction, 'id' | 'editHistory'>) => {
     await fetch('/api/transactions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
+    const [membersData, txData] = await Promise.all([
+      fetch('/api/members').then(r => r.json()),
+      fetch('/api/transactions').then(r => r.json()),
+    ]);
+    setMembers(membersData);
+    setTransactions(txData);
   };
 
   // PATCH group name; also update local state optimistically
