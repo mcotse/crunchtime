@@ -13,8 +13,7 @@ export function FeedTab({ transactions, members, onEdit }: FeedTabProps) {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric'
+      year: 'numeric'
     }).format(date);
   };
   return (

@@ -83,7 +83,7 @@ export function HomeTab({
 
             <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2">
               <div className="flex items-center space-x-1.5 text-green-600">
-                <ArrowDownIcon size={12} strokeWidth={2.5} />
+                <ArrowUpIcon size={12} strokeWidth={2.5} />
                 <span className="text-[11px] font-medium uppercase tracking-wider">
                   Income
                 </span>
@@ -94,14 +94,14 @@ export function HomeTab({
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2">
-              <div className="flex items-center space-x-1.5 text-gray-400">
-                <ArrowUpIcon size={12} strokeWidth={2.5} />
+              <div className="flex items-center space-x-1.5 text-red-600">
+                <ArrowDownIcon size={12} strokeWidth={2.5} />
                 <span className="text-[11px] font-medium uppercase tracking-wider">
                   Expenses
                 </span>
               </div>
-              <span className="text-base font-semibold text-black dark:text-white tracking-tight">
-                {fmt(totalExpenses)}
+              <span className="text-base font-semibold text-red-600 tracking-tight">
+                -{fmt(totalExpenses)}
               </span>
             </div>
           </motion.div>

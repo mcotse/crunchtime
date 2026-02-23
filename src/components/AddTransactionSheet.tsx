@@ -139,17 +139,17 @@ export function AddTransactionSheet({
                 <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
                   <button
                   type="button"
-                  onClick={() => setType('expense')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${type === 'expense' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
-
-                    Expense
-                  </button>
-                  <button
-                  type="button"
                   onClick={() => setType('income')}
                   className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${type === 'income' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
 
                     Income
+                  </button>
+                  <button
+                  type="button"
+                  onClick={() => setType('expense')}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${type === 'expense' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+
+                    Expense
                   </button>
                 </div>
 
@@ -159,8 +159,8 @@ export function AddTransactionSheet({
                       Amount
                     </label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-gray-400">
-                        $
+                      <span className={`absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold ${type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
+                        {type === 'expense' ? '-$' : '+$'}
                       </span>
                       <input
                       ref={amountRef}
@@ -176,7 +176,7 @@ export function AddTransactionSheet({
                         if (showErrors) setShowErrors(false);
                       }}
                       placeholder="0.00"
-                      className={`w-full pl-10 pr-4 py-4 text-4xl font-bold border-b-2 outline-none transition-colors bg-transparent dark:text-white placeholder:text-gray-200 dark:placeholder:text-gray-700 ${showErrors && (!amount || parseFloat(amount) <= 0) ? 'border-red-400 focus:border-red-500' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                      className={`w-full pl-16 pr-4 py-4 text-4xl font-bold border-b-2 outline-none transition-colors bg-transparent dark:text-white placeholder:text-gray-200 dark:placeholder:text-gray-700 ${showErrors && (!amount || parseFloat(amount) <= 0) ? 'border-red-400 focus:border-red-500' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
                       autoFocus
                       required />
 
