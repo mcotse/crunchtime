@@ -41,7 +41,7 @@ export function SettingsTab({
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-400';
   const divider = isDark ? 'border-gray-800' : 'border-gray-100';
   const hoverBg = isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-50';
-  const settingsGroups = [
+  const settingsGroups: Array<{ title: string; items: Array<{ icon: React.ElementType; label: string; value?: string; color?: string }> }> = [
   {
     title: 'Account',
     items: [
