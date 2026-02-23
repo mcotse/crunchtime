@@ -14,9 +14,15 @@ export function SettingsTab({ members, groupName, onGroupNameChange, isDark, onT
   const [isEditingName, setIsEditingName] = useState(false)
   const [nameInput, setNameInput] = useState(groupName)
 
-  const handleSaveName = () => {
+  const handleSaveName = async () => {
     const trimmed = nameInput.trim()
-    if (trimmed) onGroupNameChange(trimmed)
+    if (!trimmed) return
+    await fetch('/api/settings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ groupName: trimmed }),
+    })
+    onGroupNameChange(trimmed)
     setIsEditingName(false)
   }
 

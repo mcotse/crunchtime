@@ -21,22 +21,23 @@ export function BudgetApp() {
     Promise.all([
       fetch('/api/members').then((r) => r.json()),
       fetch('/api/transactions').then((r) => r.json()),
-      fetch('/api/me').then((r) => r.json()),
-    ]).then(([membersData, txData]) => {
+      fetch('/api/settings').then((r) => r.json()),
+    ]).then(([membersData, txData, settingsData]) => {
       setMembers(membersData)
       setTransactions(txData)
+      setGroupName(settingsData.groupName)
     })
   }, [])
 
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0)
 
-  const handleAddTransaction = (newTransaction: Transaction) => {
-    setTransactions([newTransaction, ...transactions])
-    setMembers(
-      members.map((m) =>
-        m.id === newTransaction.memberId ? { ...m, balance: m.balance + newTransaction.amount } : m,
-      ),
-    )
+  const handleAddTransaction = async () => {
+    const [membersData, txData] = await Promise.all([
+      fetch('/api/members').then((r) => r.json()),
+      fetch('/api/transactions').then((r) => r.json()),
+    ])
+    setMembers(membersData)
+    setTransactions(txData)
   }
 
   return (

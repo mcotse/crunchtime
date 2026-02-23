@@ -23,17 +23,22 @@ export function AddTransactionSheet({ isOpen, onClose, members, onAdd }: AddTran
 
   const isValid = amount !== '' && parseFloat(amount) > 0 && description.trim() !== ''
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isValid) return
-    onAdd({
-      amount: type === 'expense' ? -Math.abs(parseFloat(amount)) : Math.abs(parseFloat(amount)),
-      description,
-      memberId: selectedMember,
-      date: new Date().toISOString(),
-      category: 'General',
-      id: Math.random().toString(36).substr(2, 9),
+
+    await fetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: type === 'expense' ? -Math.abs(parseFloat(amount)) : Math.abs(parseFloat(amount)),
+        description,
+        memberId: selectedMember,
+        date: new Date().toISOString(),
+        category: 'General',
+      }),
     })
+
     setAmount('')
     setDescription('')
     setShowErrors(false)
