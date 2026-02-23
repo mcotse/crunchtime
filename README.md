@@ -2,18 +2,17 @@
 
 A mobile-first group expense tracker and shared budget manager. Track contributions, see who owes what, and get real-time updates when transactions are added.
 
-<!-- TODO: Add hero screenshot or demo GIF of the dashboard. Recommended: 1200x800px, showing the home tab. -->
-
 ## Features
 
 - **Shared balances** — per-member balance computed from transaction history
 - **Real-time sync** — Server-Sent Events push new transactions to all open clients instantly
 - **Activity feed** — full transaction history with categories (Food, Bills, Transport, Income, etc.)
 - **Analytics** — charts and spending insights via Recharts
-- **Expense / income toggle** — amounts flip sign based on transaction type
-- **Dark mode** — theme toggle in settings
-- **Group settings** — rename the group from the UI
+- **Add / edit transactions** — date picker, category, amount, and description with edit support
+- **Dark mode** — persisted to localStorage; toggled from settings
+- **Group settings** — member list with balances and group rename
 - **Cloudflare Access auth** — member identity tied to email; dev mode skips auth automatically
+- **E2E tests** — browser-based tests covering home, tabs, add transaction, and settings flows
 
 ## Tech Stack
 
