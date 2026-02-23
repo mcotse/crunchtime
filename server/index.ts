@@ -4,6 +4,7 @@ import { Hono } from 'hono'
 import { membersRouter } from './routes/members.js'
 import { transactionsRouter } from './routes/transactions.js'
 import { meRouter } from './routes/me.js'
+import { settingsRouter } from './routes/settings.js'
 import { authMiddleware } from './middleware/auth.js'
 
 const app = new Hono()
@@ -13,6 +14,7 @@ app.use('/api/*', authMiddleware)
 app.route('/api/members', membersRouter)
 app.route('/api/transactions', transactionsRouter)
 app.route('/api/me', meRouter)
+app.route('/api/settings', settingsRouter)
 
 // Serve React build in production
 app.use('/*', serveStatic({ root: './dist/client' }))
