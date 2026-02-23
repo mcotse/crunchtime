@@ -5,10 +5,12 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
     "noEmit": false,
+    "rootDir": "server",
     "outDir": "dist/server",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["server"]
+  "include": ["server"],
+  "exclude": ["server/seed.ts", "server/test"]
 }

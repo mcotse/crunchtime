@@ -1,7 +1,8 @@
 import { createMiddleware } from 'hono/factory'
 import { createRemoteJWKSet, jwtVerify } from 'jose'
-import type { Member } from '../../data/mockData.js'
 import db from '../db.js'
+
+type Member = { id: string; name: string; initials: string; phone: string; email: string; color: string }
 
 const TEAM_DOMAIN = process.env.CF_TEAM_DOMAIN ?? ''
 

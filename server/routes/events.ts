@@ -4,7 +4,7 @@ import { stream } from 'hono/streaming'
 export const eventsRouter = new Hono()
 
 // Store active streams
-const activeStreams = new Set<{ write: (s: string) => Promise<void>; close: () => void }>()
+const activeStreams = new Set<{ write: (s: string) => Promise<unknown>; close: () => unknown }>()
 
 export function broadcastSSE(event: string, data: unknown): void {
   const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
@@ -22,7 +22,7 @@ eventsRouter.get('/', (c) => {
       close: () => s.close(),
     }
     activeStreams.add(client)
-    s.onAbort(() => activeStreams.delete(client))
+    s.onAbort(() => { activeStreams.delete(client) })
 
     // Keep alive
     await s.write(': connected\n\n')
