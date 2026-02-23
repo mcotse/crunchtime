@@ -5,21 +5,23 @@
   "type": "module",
   "scripts": {
     "dev:client": "vite",
-    "dev:server": "node --experimental-strip-types --watch server/index.ts",
+    "dev:server": "tsx watch server/index.ts",
     "build": "tsc -p tsconfig.server.json && vite build",
-    "seed": "node --experimental-strip-types server/seed.ts",
+    "seed": "tsx server/seed.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
     "@hono/node-server": "^1.13.7",
     "better-sqlite3": "^11.7.0",
+    "framer-motion": "^11.15.0",
     "hono": "^4.6.15",
     "jose": "^5.9.6",
+    "lucide-react": "^0.477.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "framer-motion": "^11.15.0",
-    "lucide-react": "^0.477.0"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
@@ -30,6 +32,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.2",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3",
     "vite": "^6.1.0",
     "vitest": "^3.0.6"
