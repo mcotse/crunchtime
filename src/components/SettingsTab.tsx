@@ -172,7 +172,7 @@ export function SettingsTab({
                 </div>
               </div>
               <span
-              className={`text-sm font-semibold ml-2 flex-shrink-0 ${member.balance >= 0 ? textPrimary : 'text-red-500'}`}>
+              className={`text-sm font-semibold ml-2 flex-shrink-0 ${member.balance > 0 ? 'text-green-600' : member.balance < 0 ? 'text-red-500' : textPrimary}`}>
 
                 {member.balance >= 0 ? '+' : ''}
                 {member.balance.toFixed(2)}

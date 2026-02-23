@@ -100,7 +100,7 @@ export function HomeTab({
                   Expenses
                 </span>
               </div>
-              <span className="text-base font-semibold text-red-600 tracking-tight">
+              <span className="text-base font-semibold text-black dark:text-white tracking-tight">
                 -{fmt(totalExpenses)}
               </span>
             </div>

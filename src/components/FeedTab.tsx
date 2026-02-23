@@ -45,7 +45,7 @@ export function FeedTab({ transactions, members, onEdit }: FeedTabProps) {
                     {transaction.description}
                   </h3>
                   <span
-                    className={`text-base font-semibold whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-black dark:text-white'}`}>
+                    className="text-base font-semibold whitespace-nowrap text-black dark:text-white">
 
                     {isIncome ? '+' : ''}
                     {transaction.amount.toFixed(2)}
