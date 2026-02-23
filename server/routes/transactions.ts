@@ -19,7 +19,7 @@ transactionsRouter.patch('/:id', async (c) => {
   const existing = db.prepare('SELECT id, amount FROM transactions WHERE id = ?').get(id) as { id: string; amount: number } | undefined
   if (!existing) return c.json({ error: 'transaction not found' }, 404)
 
-  const body = await c.req.json<{ amount?: unknown; description?: unknown; memberId?: unknown; category?: unknown }>()
+  const body = await c.req.json<{ amount?: unknown; description?: unknown; memberId?: unknown; category?: unknown; date?: unknown }>()
 
   if (body.amount !== undefined && (typeof body.amount !== 'number' || isNaN(body.amount as number))) {
     return c.json({ error: 'amount must be a number' }, 400)
@@ -41,10 +41,11 @@ transactionsRouter.patch('/:id', async (c) => {
   const newDescription = body.description !== undefined ? (body.description as string).trim() : current.description as string
   const newMemberId = body.memberId !== undefined ? body.memberId as string : current.memberId as string
   const newCategory = body.category !== undefined ? body.category as string : current.category as string
+  const newDate = typeof body.date === 'string' ? body.date : current.date as string
 
   db.prepare(`
-    UPDATE transactions SET description = ?, amount = ?, member_id = ?, category = ? WHERE id = ?
-  `).run(newDescription, newAmount, newMemberId, newCategory, id)
+    UPDATE transactions SET description = ?, amount = ?, member_id = ?, category = ?, date = ? WHERE id = ?
+  `).run(newDescription, newAmount, newMemberId, newCategory, newDate, id)
 
   const updated = db.prepare(`
     SELECT id, description, amount, member_id as memberId, date, category, edit_history as editHistory

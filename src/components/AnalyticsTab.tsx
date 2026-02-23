@@ -12,8 +12,12 @@ import { motion } from 'framer-motion';
 interface AnalyticsTabProps {
   members: Member[];
   transactions: Transaction[];
+  isDark?: boolean;
 }
-export function AnalyticsTab({ members, transactions }: AnalyticsTabProps) {
+export function AnalyticsTab({ members, transactions, isDark }: AnalyticsTabProps) {
+  const lineColor = isDark ? '#ffffff' : '#000000';
+  const gradientColor = isDark ? '#ffffff' : '#000000';
+  const gradientOpacityStart = isDark ? 0.15 : 0.08;
   // --- Group balance over time ---
   const sorted = [...transactions].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -73,8 +77,8 @@ export function AnalyticsTab({ members, transactions }: AnalyticsTabProps) {
 
                 <defs>
                   <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#000000" stopOpacity={0.08} />
-                    <stop offset="95%" stopColor="#000000" stopOpacity={0} />
+                    <stop offset="5%" stopColor={gradientColor} stopOpacity={gradientOpacityStart} />
+                    <stop offset="95%" stopColor={gradientColor} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
@@ -113,13 +117,13 @@ export function AnalyticsTab({ members, transactions }: AnalyticsTabProps) {
                 <Area
                   type="monotone"
                   dataKey="balance"
-                  stroke="#000000"
+                  stroke={lineColor}
                   strokeWidth={1.5}
                   fill="url(#balanceGrad)"
                   dot={false}
                   activeDot={{
                     r: 4,
-                    fill: '#000',
+                    fill: lineColor,
                     strokeWidth: 0
                   }} />
 

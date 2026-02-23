@@ -131,7 +131,7 @@ export function BudgetApp() {
           }
           {activeTab === 'members' && <MembersTab members={members} />}
           {activeTab === 'analytics' &&
-          <AnalyticsTab members={members} transactions={transactions} />
+          <AnalyticsTab members={members} transactions={transactions} isDark={isDark} />
           }
           {activeTab === 'settings' &&
           <SettingsTab

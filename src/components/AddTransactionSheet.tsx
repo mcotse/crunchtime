@@ -25,6 +25,7 @@ export function AddTransactionSheet({
   const [description, setDescription] = useState('');
   const [selectedMember, setSelectedMember] = useState(members[0]?.id ?? '');
   const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
@@ -33,12 +34,14 @@ export function AddTransactionSheet({
       setDescription(editingTransaction.description);
       setSelectedMember(editingTransaction.memberId);
       setType(editingTransaction.amount >= 0 ? 'income' : 'expense');
+      setDate(editingTransaction.date.slice(0, 10));
       setShowErrors(false);
     } else if (isOpen && !editingTransaction) {
       setAmount('');
       setDescription('');
       setSelectedMember(members[0]?.id ?? '');
       setType('expense');
+      setDate(new Date().toISOString().slice(0, 10));
       setShowErrors(false);
     }
   }, [isOpen, editingTransaction]);
@@ -56,7 +59,7 @@ export function AddTransactionSheet({
       Math.abs(parseFloat(amount)),
       description,
       memberId: selectedMember,
-      date: new Date().toISOString(),
+      date: new Date(date + 'T00:00:00').toISOString(),
       category: 'General',
     };
     if (isEditMode && onUpdate && editingTransaction) {
@@ -199,6 +202,17 @@ export function AddTransactionSheet({
                   }
                   required />
 
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl outline-none bg-transparent dark:text-white focus:border-black dark:focus:border-white transition-colors"
+                    />
+                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
