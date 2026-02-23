@@ -9,7 +9,7 @@ export const transactionsRouter = new Hono<{ Variables: Variables }>()
 transactionsRouter.get('/', (c) => {
   const rows = db.prepare(`
     SELECT id, description, amount, member_id as memberId, date, category, edit_history as editHistory
-    FROM transactions ORDER BY date DESC
+    FROM transactions ORDER BY date DESC, rowid DESC
   `).all() as Array<Record<string, unknown>>
   return c.json(rows.map(r => ({ ...r, editHistory: JSON.parse(r.editHistory as string) })))
 })
