@@ -8,6 +8,11 @@ export class AgentBrowser {
     this.session = session
   }
 
+  /** Shell-quote a string using single quotes so CSS attribute selectors work. */
+  private static q(s: string): string {
+    return "'" + s.replace(/'/g, "'\\''") + "'"
+  }
+
   private run(cmd: string, timeoutMs = 15_000): string {
     return execSync(
       `npx agent-browser ${cmd} --session ${this.session}`,
@@ -17,7 +22,7 @@ export class AgentBrowser {
 
   /** Navigate to a URL and wait for the page to be interactive. */
   open(url: string): void {
-    this.run(`open ${url}`)
+    this.run(`open ${AgentBrowser.q(url)}`)
   }
 
   /**
@@ -34,27 +39,24 @@ export class AgentBrowser {
     return this.run(`snapshot ${flags}`)
   }
 
-  /** Click an element identified by an @ref, CSS selector, or aria-label. */
+  /** Click an element identified by an @ref, CSS selector, or text= selector. */
   click(selector: string): void {
-    this.run(`click "${selector}"`)
+    this.run(`click ${AgentBrowser.q(selector)}`)
   }
 
   /** Clear an input and type a value (by @ref or CSS selector). */
   fill(selector: string, value: string): void {
-    // Escape any quotes in the value to avoid shell issues
-    const safe = value.replace(/"/g, '\\"')
-    this.run(`fill "${selector}" "${safe}"`)
+    this.run(`fill ${AgentBrowser.q(selector)} ${AgentBrowser.q(value)}`)
   }
 
   /** Choose a <select> option by visible text value. */
   select(selector: string, value: string): void {
-    const safe = value.replace(/"/g, '\\"')
-    this.run(`select "${selector}" "${safe}"`)
+    this.run(`select ${AgentBrowser.q(selector)} ${AgentBrowser.q(value)}`)
   }
 
   /** Get the text content of an element (by @ref or CSS selector). */
   getText(selector: string): string {
-    return this.run(`get text "${selector}"`).trim()
+    return this.run(`get text ${AgentBrowser.q(selector)}`).trim()
   }
 
   /**
@@ -62,7 +64,7 @@ export class AgentBrowser {
    * Throws if it doesn't appear within `timeoutMs`.
    */
   waitFor(selector: string, timeoutMs = 8_000): void {
-    this.run(`wait "${selector}" --timeout ${timeoutMs}`, timeoutMs + 2_000)
+    this.run(`wait ${AgentBrowser.q(selector)} --timeout ${timeoutMs}`, timeoutMs + 2_000)
   }
 
   /** Destroy this browser session (frees daemon resources). */

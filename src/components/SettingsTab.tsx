@@ -78,6 +78,7 @@ export function SettingsTab({
 
                 <button
                 onClick={handleSaveName}
+                aria-label="Save group name"
                 className={`transition-colors flex-shrink-0 ${textPrimary}`}>
 
                   <CheckIcon size={16} />
@@ -93,6 +94,7 @@ export function SettingsTab({
                   setNameInput(groupName);
                   setIsEditingName(true);
                 }}
+                aria-label="Edit group name"
                 className={`transition-colors ${textMuted}`}>
 
                   <PencilIcon size={13} />

@@ -37,6 +37,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
+              aria-label={tab.label}
               className="relative flex flex-col items-center justify-center w-16 h-full space-y-1">
 
               <div

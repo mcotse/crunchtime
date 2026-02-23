@@ -245,6 +245,7 @@ export function AddTransactionSheet({
               <Button
               type="button"
               onClick={handleCTAClick}
+              aria-label="Submit transaction"
               className="w-full h-14 text-lg bg-black dark:bg-white text-white dark:text-black rounded-xl">
 
                 {isEditMode ? 'Update' : 'Add Transaction'}
