@@ -29,15 +29,31 @@ export function BudgetApp() {
     })
   }, [])
 
+  useEffect(() => {
+    const es = new EventSource('/api/events')
+
+    es.addEventListener('transaction_added', (e) => {
+      const tx = JSON.parse(e.data) as Transaction
+      setTransactions((prev) => [tx, ...prev])
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.id === tx.memberId ? { ...m, balance: m.balance + tx.amount } : m,
+        ),
+      )
+    })
+
+    es.addEventListener('settings_updated', (e) => {
+      const { groupName } = JSON.parse(e.data) as { groupName: string }
+      setGroupName(groupName)
+    })
+
+    return () => es.close()
+  }, [])
+
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0)
 
-  const handleAddTransaction = async () => {
-    const [membersData, txData] = await Promise.all([
-      fetch('/api/members').then((r) => r.json()),
-      fetch('/api/transactions').then((r) => r.json()),
-    ])
-    setMembers(membersData)
-    setTransactions(txData)
+  const handleAddTransaction = () => {
+    // SSE delivers the new transaction via EventSource listener
   }
 
   return (
