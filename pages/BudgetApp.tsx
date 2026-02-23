@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { MEMBERS, TRANSACTIONS, Transaction } from '../data/mockData'
+import React, { useState, useEffect } from 'react'
+import { Member, Transaction } from '../data/mockData'
 import { BalanceHeader } from '../components/BalanceHeader'
 import { TabBar } from '../components/TabBar'
 import { HomeTab } from '../components/HomeTab'
@@ -12,10 +12,21 @@ import { AddTransactionSheet } from '../components/AddTransactionSheet'
 export function BudgetApp() {
   const [activeTab, setActiveTab] = useState('home')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [transactions, setTransactions] = useState<Transaction[]>(TRANSACTIONS)
-  const [members, setMembers] = useState(MEMBERS)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [members, setMembers] = useState<Member[]>([])
   const [groupName, setGroupName] = useState('Crunch Fund')
   const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/members').then((r) => r.json()),
+      fetch('/api/transactions').then((r) => r.json()),
+      fetch('/api/me').then((r) => r.json()),
+    ]).then(([membersData, txData]) => {
+      setMembers(membersData)
+      setTransactions(txData)
+    })
+  }, [])
 
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0)
 
