@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import db from '../db.js'
+import { broadcastSSE } from './events.js'
 
 export const settingsRouter = new Hono()
 
@@ -15,5 +16,6 @@ settingsRouter.patch('/', async (c) => {
   }
   const name = body.groupName.trim()
   db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('group_name', ?)").run(name)
+  broadcastSSE('settings_updated', { groupName: name })
   return c.json({ groupName: name })
 })

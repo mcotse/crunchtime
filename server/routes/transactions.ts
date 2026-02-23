@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { randomUUID } from 'node:crypto'
 import db from '../db.js'
 import type { Variables } from '../middleware/auth.js'
+import { broadcastSSE } from './events.js'
 
 export const transactionsRouter = new Hono<{ Variables: Variables }>()
 
@@ -39,5 +40,6 @@ transactionsRouter.post('/', async (c) => {
   `).run(id, body.description.trim(), body.amount, body.memberId, date, category)
 
   const tx = { id, description: body.description.trim(), amount: body.amount, memberId: body.memberId, date, category }
+  broadcastSSE('transaction_added', tx)
   return c.json(tx, 201)
 })
