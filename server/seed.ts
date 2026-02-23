@@ -1,5 +1,5 @@
 import db from './db.ts'
-import { MEMBERS, TRANSACTIONS } from '../data/mockData.ts'
+import { MEMBERS, TRANSACTIONS } from '../src/data/mockData.ts'
 
 // Clear existing data
 db.exec('DELETE FROM transactions; DELETE FROM members;')
