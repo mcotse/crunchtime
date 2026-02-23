@@ -49,7 +49,7 @@ export function AnalyticsTab({ members, transactions }: AnalyticsTabProps) {
   }).format(n);
   const isPositive = (n: number) => n >= 0;
   return (
-    <div className="px-4 pb-32 pt-4 space-y-8">
+    <div className="flex-1 overflow-y-auto px-4 pb-32 pt-4 space-y-8">
       <h2 className="text-lg font-semibold text-black dark:text-white px-2">
         Analytics
       </h2>

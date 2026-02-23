@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Member, Transaction } from '../data/mockData';
 import { BalanceHeader } from '../components/BalanceHeader';
 import { TabBar } from '../components/TabBar';
@@ -12,6 +12,7 @@ import { AddTransactionSheet } from '../components/AddTransactionSheet';
 export function BudgetApp() {
   const [activeTab, setActiveTab] = useState('home');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [groupName, setGroupName] = useState('Crunch Fund');
@@ -22,13 +23,13 @@ export function BudgetApp() {
   // Fetch all initial data on mount
   useEffect(() => {
     Promise.all([
-      fetch('/api/members').then(r => r.json()),
-      fetch('/api/transactions').then(r => r.json()),
-      fetch('/api/settings').then(r => r.json()),
+      fetch('/api/members').then(r => r.ok ? r.json() : []),
+      fetch('/api/transactions').then(r => r.ok ? r.json() : []),
+      fetch('/api/settings').then(r => r.ok ? r.json() : null),
     ]).then(([membersData, txData, settingsData]) => {
       setMembers(membersData);
       setTransactions(txData);
-      setGroupName(settingsData.groupName);
+      if (settingsData) setGroupName(settingsData.groupName);
     });
   }, []);
 
@@ -39,8 +40,8 @@ export function BudgetApp() {
     es.addEventListener('transaction_added', () => {
       // Refetch both members (balance changes) and transactions
       Promise.all([
-        fetch('/api/members').then(r => r.json()),
-        fetch('/api/transactions').then(r => r.json()),
+        fetch('/api/members').then(r => r.ok ? r.json() : []),
+        fetch('/api/transactions').then(r => r.ok ? r.json() : []),
       ]).then(([membersData, txData]) => {
         setMembers(membersData);
         setTransactions(txData);
@@ -63,8 +64,27 @@ export function BudgetApp() {
       body: JSON.stringify(data),
     });
     const [membersData, txData] = await Promise.all([
-      fetch('/api/members').then(r => r.json()),
-      fetch('/api/transactions').then(r => r.json()),
+      fetch('/api/members').then(r => r.ok ? r.json() : []),
+      fetch('/api/transactions').then(r => r.ok ? r.json() : []),
+    ]);
+    setMembers(membersData);
+    setTransactions(txData);
+  };
+
+  const handleEditTransaction = useCallback((transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setIsSheetOpen(true);
+  }, []);
+
+  const handleUpdateTransaction = async (id: string, data: Omit<Transaction, 'id' | 'editHistory'>) => {
+    await fetch(`/api/transactions/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const [membersData, txData] = await Promise.all([
+      fetch('/api/members').then(r => r.ok ? r.json() : []),
+      fetch('/api/transactions').then(r => r.ok ? r.json() : []),
     ]);
     setMembers(membersData);
     setTransactions(txData);
@@ -82,9 +102,9 @@ export function BudgetApp() {
 
   return (
     <div
-      className={`min-h-screen font-sans selection:bg-gray-200 ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
+      className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
 
-      <div className="max-w-md mx-auto min-h-screen relative flex flex-col">
+      <div className="max-w-md mx-auto h-full relative flex flex-col">
         {activeTab !== 'home' &&
         <BalanceHeader
           balance={totalBalance}
@@ -92,7 +112,7 @@ export function BudgetApp() {
 
         }
 
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col overflow-hidden">
           {activeTab === 'home' &&
           <HomeTab
             members={members}
@@ -103,7 +123,7 @@ export function BudgetApp() {
 
           }
           {activeTab === 'activity' &&
-          <FeedTab transactions={transactions} members={members} />
+          <FeedTab transactions={transactions} members={members} onEdit={handleEditTransaction} />
           }
           {activeTab === 'members' && <MembersTab members={members} />}
           {activeTab === 'analytics' &&
@@ -124,9 +144,11 @@ export function BudgetApp() {
 
         <AddTransactionSheet
           isOpen={isSheetOpen}
-          onClose={() => setIsSheetOpen(false)}
+          onClose={() => { setIsSheetOpen(false); setEditingTransaction(null); }}
           members={members}
-          onAdd={handleAddTransaction} />
+          onAdd={handleAddTransaction}
+          editingTransaction={editingTransaction}
+          onUpdate={handleUpdateTransaction} />
 
       </div>
     </div>);

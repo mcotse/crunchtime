@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import {
-  BellIcon,
-  ShieldIcon,
-  CreditCardIcon,
-  HelpCircleIcon,
   LogOutIcon,
   ChevronRightIcon,
-  PhoneIcon,
   MailIcon,
   PencilIcon,
   CheckIcon,
@@ -43,30 +38,8 @@ export function SettingsTab({
   const hoverBg = isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-50';
   const settingsGroups: Array<{ title: string; items: Array<{ icon: React.ElementType; label: string; value?: string; color?: string }> }> = [
   {
-    title: 'Account',
-    items: [
-    {
-      icon: BellIcon,
-      label: 'Notifications',
-      value: 'On'
-    },
-    {
-      icon: ShieldIcon,
-      label: 'Privacy & Security'
-    },
-    {
-      icon: CreditCardIcon,
-      label: 'Payment Methods'
-    }]
-
-  },
-  {
     title: 'Support',
     items: [
-    {
-      icon: HelpCircleIcon,
-      label: 'Help Center'
-    },
     {
       icon: LogOutIcon,
       label: 'Log Out',
@@ -76,7 +49,7 @@ export function SettingsTab({
   }];
 
   return (
-    <div className={`px-4 pb-24 space-y-8 pt-4 ${bg}`}>
+    <div className={`flex-1 overflow-y-auto px-4 pb-24 space-y-8 pt-4 ${bg}`}>
       <h2 className={`text-lg font-semibold px-2 ${textPrimary}`}>Settings</h2>
 
       {/* Group name section */}
@@ -190,11 +163,6 @@ export function SettingsTab({
                 <div
                 className={`flex items-center space-x-2 text-[11px] mt-0.5 ${textMuted}`}>
 
-                  <span className="flex items-center">
-                    <PhoneIcon size={9} className="mr-1" />
-                    {member.phone}
-                  </span>
-                  <span>·</span>
                   <span className="flex items-center truncate">
                     <MailIcon size={9} className="mr-1" />
                     {member.email}
@@ -249,7 +217,7 @@ export function SettingsTab({
 
       <div className="text-center pt-8">
         <p className={`text-xs ${textMuted}`}>
-          Version 1.0.2 • Build 2023.10.27
+          Version {__APP_VERSION__} • Built {__BUILD_DATE__}
         </p>
       </div>
     </div>);

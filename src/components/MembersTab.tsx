@@ -1,12 +1,12 @@
 import React from 'react';
 import { Member } from '../data/mockData';
-import { PhoneIcon, MailIcon } from 'lucide-react';
+import { MailIcon } from 'lucide-react';
 interface MembersTabProps {
   members: Member[];
 }
 export function MembersTab({ members }: MembersTabProps) {
   return (
-    <div className="px-4 pb-24 space-y-6">
+    <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-6">
       <h2 className="text-lg font-semibold text-black dark:text-white px-2">
         Group Members ({members.length})
       </h2>
@@ -30,10 +30,6 @@ export function MembersTab({ members }: MembersTabProps) {
                 {member.name}
               </h3>
               <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
-                <span className="flex items-center">
-                  <PhoneIcon size={10} className="mr-1" />
-                  {member.phone}
-                </span>
                 <span className="flex items-center">
                   <MailIcon size={10} className="mr-1" />
                   email
