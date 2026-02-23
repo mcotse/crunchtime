@@ -29,7 +29,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   }];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 pb-safe pt-2 px-6 z-40">
+    <div className="tab-bar fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 pb-safe pt-2 px-6 z-40">
       <div className="max-w-md mx-auto flex justify-between items-center h-16">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;

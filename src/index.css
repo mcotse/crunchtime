@@ -19,3 +19,10 @@
   transition-duration: revert;
   transition-timing-function: revert;
 }
+
+/* Extra bottom padding for tab bar when installed as a PWA */
+@media (display-mode: standalone) {
+  .tab-bar {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5px);
+  }
+}
