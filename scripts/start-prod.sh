@@ -2,7 +2,7 @@
 set -e
 
 export DB_PATH=/Users/mcotse/Developer/crunchtime/crunchtime.db
-export CF_TEAM_DOMAIN=<your-team-name>
+export CF_TEAM_DOMAIN=chummycollective
 export PORT=4000
 
 echo "Starting Crunchtime server..."
