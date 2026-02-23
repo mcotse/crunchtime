@@ -33,6 +33,53 @@ describe('GET /api/transactions', () => {
     const body = await res.json() as any[]
     expect(Array.isArray(body)).toBe(true)
   })
+
+  it('sorts transactions with the same date by insertion order (newest first)', async () => {
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO members (id, name, initials, phone, email, color)
+      VALUES ('m1', 'Alice', 'AO', '+1-555-0101', 'alice@example.com', '#6366f1')
+    `).run()
+
+    const sameDate = '2025-06-15'
+    db.prepare(`INSERT INTO transactions (id, description, amount, member_id, date, category) VALUES (?, ?, ?, ?, ?, ?)`)
+      .run('tx-first', 'Inserted first', -10, 'm1', sameDate, 'General')
+    db.prepare(`INSERT INTO transactions (id, description, amount, member_id, date, category) VALUES (?, ?, ?, ?, ?, ?)`)
+      .run('tx-second', 'Inserted second', -20, 'm1', sameDate, 'General')
+    db.prepare(`INSERT INTO transactions (id, description, amount, member_id, date, category) VALUES (?, ?, ?, ?, ?, ?)`)
+      .run('tx-third', 'Inserted third', -30, 'm1', sameDate, 'General')
+
+    const app = await getApp()
+    const res = await app.request('/api/transactions')
+    const body = await res.json() as any[]
+
+    const sameDateTxs = body.filter((t: any) => t.date === sameDate)
+    expect(sameDateTxs.length).toBe(3)
+    expect(sameDateTxs[0].id).toBe('tx-third')
+    expect(sameDateTxs[1].id).toBe('tx-second')
+    expect(sameDateTxs[2].id).toBe('tx-first')
+  })
+
+  it('sorts by date desc across different dates', async () => {
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO members (id, name, initials, phone, email, color)
+      VALUES ('m1', 'Alice', 'AO', '+1-555-0101', 'alice@example.com', '#6366f1')
+    `).run()
+
+    db.prepare(`INSERT INTO transactions (id, description, amount, member_id, date, category) VALUES (?, ?, ?, ?, ?, ?)`)
+      .run('tx-old', 'Old one', -10, 'm1', '2025-01-01', 'General')
+    db.prepare(`INSERT INTO transactions (id, description, amount, member_id, date, category) VALUES (?, ?, ?, ?, ?, ?)`)
+      .run('tx-new', 'New one', -20, 'm1', '2025-12-01', 'General')
+
+    const app = await getApp()
+    const res = await app.request('/api/transactions')
+    const body = await res.json() as any[]
+
+    const oldIdx = body.findIndex((t: any) => t.id === 'tx-old')
+    const newIdx = body.findIndex((t: any) => t.id === 'tx-new')
+    expect(newIdx).toBeLessThan(oldIdx)
+  })
 })
 
 describe('GET /api/me', () => {
