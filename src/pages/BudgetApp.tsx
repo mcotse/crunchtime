@@ -16,7 +16,11 @@ export function BudgetApp() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [groupName, setGroupName] = useState('Crunch Fund');
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) return saved === 'true';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0);
 
@@ -135,7 +139,10 @@ export function BudgetApp() {
             groupName={groupName}
             onGroupNameChange={handleGroupNameChange}
             isDark={isDark}
-            onToggleDark={() => setIsDark((d) => !d)} />
+            onToggleDark={() => setIsDark(d => {
+              localStorage.setItem('darkMode', String(!d));
+              return !d;
+            })} />
 
           }
         </main>
