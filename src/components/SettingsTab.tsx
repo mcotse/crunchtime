@@ -138,6 +138,7 @@ export function SettingsTab({
             <button
               type="button"
               onClick={onToggleDark}
+              aria-label="Toggle dark mode"
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isDark ? 'bg-black' : 'bg-gray-200'}`}>
 
               <span
