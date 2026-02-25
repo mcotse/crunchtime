@@ -119,7 +119,8 @@ export function AddTransactionSheet({
             damping: 25,
             stiffness: 200
           }}
-          className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[85vh] flex flex-col">
+          style={{ x: '-50%' }}
+          className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[85vh] flex flex-col">
 
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
               <h2 className="text-xl font-bold dark:text-white">

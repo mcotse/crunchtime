@@ -5,7 +5,8 @@ import {
   MailIcon,
   PencilIcon,
   CheckIcon,
-  MoonIcon } from
+  MoonIcon,
+  XIcon } from
 'lucide-react';
 import { Member } from '../data/mockData';
 interface SettingsTabProps {
@@ -14,13 +15,15 @@ interface SettingsTabProps {
   onGroupNameChange: (name: string) => void;
   isDark: boolean;
   onToggleDark: () => void;
+  onClose?: () => void;
 }
 export function SettingsTab({
   members,
   groupName,
   onGroupNameChange,
   isDark,
-  onToggleDark
+  onToggleDark,
+  onClose
 }: SettingsTabProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(groupName);
@@ -50,7 +53,17 @@ export function SettingsTab({
 
   return (
     <div className={`flex-1 overflow-y-auto px-4 pb-24 space-y-8 pt-4 ${bg}`}>
-      <h2 className={`text-lg font-semibold px-2 ${textPrimary}`}>Settings</h2>
+      <div className="flex items-center justify-between px-2">
+        <h2 className={`text-lg font-semibold ${textPrimary}`}>Settings</h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className={`p-2 -mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${textPrimary}`}
+          >
+            <XIcon size={22} />
+          </button>
+        )}
+      </div>
 
       {/* Group name section */}
       <div className="space-y-2">

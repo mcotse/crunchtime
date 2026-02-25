@@ -5,6 +5,8 @@ import { membersRouter } from './routes/members.js'
 import { transactionsRouter } from './routes/transactions.js'
 import { meRouter } from './routes/me.js'
 import { settingsRouter } from './routes/settings.js'
+import { pollsRouter } from './routes/polls.js'
+import { calendarRouter } from './routes/calendar.js'
 import { eventsRouter } from './routes/events.js'
 import { authMiddleware } from './middleware/auth.js'
 
@@ -16,6 +18,8 @@ app.route('/api/members', membersRouter)
 app.route('/api/transactions', transactionsRouter)
 app.route('/api/me', meRouter)
 app.route('/api/settings', settingsRouter)
+app.route('/api/polls', pollsRouter)
+app.route('/api/calendar', calendarRouter)
 app.route('/api/events', eventsRouter)
 
 // Serve React build in production

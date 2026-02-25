@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(npx tsx:*)",
+      "Bash(echo killed:*)",
+      "Bash(npm run:*)",
+      "Bash(pkill:*)",
+      "Bash(git push:*)",
+      "Bash(gh api repos/mluo_ramp/crunchtime --jq '.full_name' 2>&1 || gh api repos/mluo-ramp/crunchtime --jq '.full_name' 2>&1)",
+      "Bash(gh api:*)"
+    ]
+  }
+}
