@@ -89,3 +89,44 @@ describe('GET /api/transactions', () => {
     expect(newIdx).toBeLessThan(oldIdx)
   })
 })
+
+describe('GET /api/members — balance computation', () => {
+  it('returns balance = 0 for member with no transactions', async () => {
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO members (id, name, initials, phone, email, color)
+      VALUES ('bal-m1', 'Charlie', 'CH', '+1-555-0301', 'charlie@example.com', '#10b981')
+    `).run()
+
+    const app = await getApp()
+    const res = await app.request('/api/members')
+    expect(res.status).toBe(200)
+    const body = await res.json() as any[]
+    const member = body.find((m: any) => m.id === 'bal-m1')
+    expect(member).toBeDefined()
+    expect(member.balance).toBe(0)
+  })
+
+  it('returns correct balance sum for member with transactions', async () => {
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO members (id, name, initials, phone, email, color)
+      VALUES ('bal-m2', 'Diana', 'DI', '+1-555-0302', 'diana@example.com', '#f59e0b')
+    `).run()
+    db.prepare(`
+      INSERT INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('bal-tx1', 'Lunch', -30, 'bal-m2', '2026-01-01', 'Food')
+    `).run()
+    db.prepare(`
+      INSERT INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('bal-tx2', 'Coffee', -5, 'bal-m2', '2026-01-02', 'Food')
+    `).run()
+
+    const app = await getApp()
+    const res = await app.request('/api/members')
+    const body = await res.json() as any[]
+    const member = body.find((m: any) => m.id === 'bal-m2')
+    expect(member).toBeDefined()
+    expect(member.balance).toBe(-35)
+  })
+})
