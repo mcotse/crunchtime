@@ -27,9 +27,11 @@ app.route('/api/events', eventsRouter)
 // Serve React build in production
 app.use('/*', serveStatic({ root: './dist/client' }))
 
-const PORT = Number(process.env.PORT ?? 3000)
-serve({ fetch: app.fetch, port: PORT }, () => {
-  console.log(`Crunchtime server running on http://localhost:${PORT}`)
-})
+if (!process.env.VITEST) {
+  const PORT = Number(process.env.PORT ?? 3000)
+  serve({ fetch: app.fetch, port: PORT }, () => {
+    console.log(`Crunchtime server running on http://localhost:${PORT}`)
+  })
+}
 
 export { app }

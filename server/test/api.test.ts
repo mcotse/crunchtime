@@ -10,6 +10,14 @@ async function getApp() {
   return app
 }
 
+describe('GET /api/me', () => {
+  it('returns 404 when no members exist', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/me')
+    expect(res.status).toBe(404)
+  })
+})
+
 describe('GET /api/members', () => {
   it('returns array of members with balance', async () => {
     const app = await getApp()
@@ -79,13 +87,5 @@ describe('GET /api/transactions', () => {
     const oldIdx = body.findIndex((t: any) => t.id === 'tx-old')
     const newIdx = body.findIndex((t: any) => t.id === 'tx-new')
     expect(newIdx).toBeLessThan(oldIdx)
-  })
-})
-
-describe('GET /api/me', () => {
-  it('returns 404 when no members exist', async () => {
-    const app = await getApp()
-    const res = await app.request('/api/me')
-    expect(res.status).toBe(404)
   })
 })
