@@ -6,7 +6,7 @@
   <string>com.crunchtime.server</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/homebrew/bin/node</string>
+    <string>/Users/mcotse/.nvm/versions/node/v25.3.0/bin/node</string>
     <string>/Users/mcotse/Developer/crunchtime/dist/server/index.js</string>
   </array>
   <key>EnvironmentVariables</key>
