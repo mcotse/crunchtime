@@ -13,6 +13,9 @@ import { PollsTab } from '../components/PollsTab';
 import { AddTransactionSheet } from '../components/AddTransactionSheet';
 import { CreatePollSheet } from '../components/CreatePollSheet';
 import { PollDetailSheet } from '../components/PollDetailSheet';
+import { CalendarTab } from '../components/CalendarTab';
+import { DayDetailSheet } from '../components/DayDetailSheet';
+import type { CalendarAvailability } from '../data/calendarData';
 
 export function BudgetApp() {
   const [activeTab, setActiveTab] = useState('home');
@@ -34,6 +37,12 @@ export function BudgetApp() {
   const [isPollDetailOpen, setIsPollDetailOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Calendar state
+  const [calendarAvailability, setCalendarAvailability] =
+    useState<CalendarAvailability>({})
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(null)
+  const [isDayDetailOpen, setIsDayDetailOpen] = useState(false)
+
   const CURRENT_USER_ID = 'm1';
 
   useEffect(() => {
@@ -43,6 +52,7 @@ export function BudgetApp() {
   const totalBalance = members.reduce((sum, m) => sum + m.balance, 0);
 
   const fetchPolls = () => fetch('/api/polls').then(r => r.ok ? r.json() : []);
+  const fetchCalendar = () => fetch('/api/calendar').then(r => r.ok ? r.json() : {});
 
   // Fetch all initial data on mount
   useEffect(() => {
@@ -51,11 +61,13 @@ export function BudgetApp() {
       fetch('/api/transactions').then(r => r.ok ? r.json() : []),
       fetch('/api/settings').then(r => r.ok ? r.json() : null),
       fetchPolls(),
-    ]).then(([membersData, txData, settingsData, pollsData]) => {
+      fetchCalendar(),
+    ]).then(([membersData, txData, settingsData, pollsData, calendarData]) => {
       setMembers(membersData);
       setTransactions(txData);
       if (settingsData) setGroupName(settingsData.groupName);
       setPolls(pollsData);
+      setCalendarAvailability(calendarData);
     });
   }, []);
 
@@ -80,6 +92,10 @@ export function BudgetApp() {
 
     es.addEventListener('poll_updated', () => {
       fetchPolls().then(setPolls);
+    });
+
+    es.addEventListener('calendar_updated', (e: MessageEvent) => {
+      setCalendarAvailability(JSON.parse(e.data));
     });
 
     return () => es.close();
@@ -189,6 +205,39 @@ export function BudgetApp() {
     }
   };
 
+  // --- Calendar handlers ---
+  const handleDayTap = (dateStr: string) => {
+    setSelectedCalendarDate(dateStr)
+    setIsDayDetailOpen(true)
+  }
+
+  const handleToggleAvailability = async (
+    dateStr: string,
+    slot: 'morning' | 'evening',
+  ) => {
+    // Optimistic update
+    setCalendarAvailability((prev) => {
+      const existing = prev[dateStr] ?? { morning: [], evening: [] }
+      const slotArr = existing[slot]
+      const isIn = slotArr.includes(CURRENT_USER_ID)
+      return {
+        ...prev,
+        [dateStr]: {
+          ...existing,
+          [slot]: isIn
+            ? slotArr.filter((id) => id !== CURRENT_USER_ID)
+            : [...slotArr, CURRENT_USER_ID],
+        },
+      }
+    })
+
+    const res = await fetch(`/api/calendar/${dateStr}/${slot}`, { method: 'POST' })
+    if (res.ok) {
+      const updated = await res.json()
+      setCalendarAvailability(updated)
+    }
+  }
+
   // PATCH group name; also update local state optimistically
   const handleGroupNameChange = async (name: string) => {
     setGroupName(name);
@@ -206,12 +255,12 @@ export function BudgetApp() {
       <div className="max-w-md mx-auto h-full relative flex flex-col">
         <button
           onClick={() => setShowSettings(true)}
-          className="absolute top-4 right-4 z-30 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="absolute top-4 right-4 z-40 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
           <SettingsIcon size={20} className="text-gray-400 dark:text-gray-500" />
         </button>
 
-        {activeTab !== 'home' && activeTab !== 'polls' &&
+        {activeTab !== 'home' && activeTab !== 'polls' && activeTab !== 'calendar' &&
         <BalanceHeader
           balance={totalBalance}
           onAddTransaction={() => setIsSheetOpen(true)} />
@@ -243,6 +292,13 @@ export function BudgetApp() {
           }
           {activeTab === 'analytics' &&
           <AnalyticsTab members={members} transactions={transactions} isDark={isDark} />
+          }
+          {activeTab === 'calendar' &&
+          <CalendarTab
+            availability={calendarAvailability}
+            members={members}
+            currentUserId={CURRENT_USER_ID}
+            onDayTap={handleDayTap} />
           }
         </main>
 
@@ -287,6 +343,15 @@ export function BudgetApp() {
           onAddOption={handleAddOption}
           onArchive={handleArchive}
           onUnarchive={handleUnarchive} />
+
+        <DayDetailSheet
+          dateStr={selectedCalendarDate}
+          isOpen={isDayDetailOpen}
+          onClose={() => setIsDayDetailOpen(false)}
+          availability={calendarAvailability}
+          members={members}
+          currentUserId={CURRENT_USER_ID}
+          onToggle={handleToggleAvailability} />
 
       </div>
     </div>);

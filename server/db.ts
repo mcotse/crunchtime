@@ -60,6 +60,13 @@ db.exec(`
     member_id TEXT NOT NULL REFERENCES members(id),
     PRIMARY KEY (option_id, member_id)
   );
+
+  CREATE TABLE IF NOT EXISTS calendar_availability (
+    member_id TEXT NOT NULL REFERENCES members(id),
+    date      TEXT NOT NULL,
+    slot      TEXT NOT NULL CHECK(slot IN ('morning', 'evening')),
+    PRIMARY KEY (member_id, date, slot)
+  );
 `)
 
 export default db

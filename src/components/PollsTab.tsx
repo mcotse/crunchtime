@@ -108,7 +108,7 @@ export function PollsTab({
   })
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 pb-32 pt-6 space-y-6">
+    <div className="flex-1 overflow-y-auto px-4 pb-32 pt-14 space-y-6">
       <div className="flex justify-center pt-2 pb-2">
         <Button
           onClick={onCreatePoll}

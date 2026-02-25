@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeIcon, ClockIcon, BarChart3Icon, ListChecksIcon } from 'lucide-react';
+import { HomeIcon, ClockIcon, BarChart3Icon, ListChecksIcon, CalendarIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 interface TabBarProps {
   activeTab: string;
@@ -26,6 +26,11 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
     id: 'polls',
     icon: ListChecksIcon,
     label: 'Polls'
+  },
+  {
+    id: 'calendar',
+    icon: CalendarIcon,
+    label: 'Calendar'
   }];
 
   return (
