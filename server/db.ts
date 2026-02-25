@@ -35,6 +35,31 @@ db.exec(`
   );
 
   INSERT OR IGNORE INTO settings (key, value) VALUES ('group_name', 'Crunch Fund');
+
+  CREATE TABLE IF NOT EXISTS polls (
+    id                           TEXT PRIMARY KEY,
+    emoji                        TEXT NOT NULL DEFAULT '📊',
+    title                        TEXT NOT NULL,
+    creator_id                   TEXT NOT NULL REFERENCES members(id),
+    created_at                   TEXT NOT NULL,
+    expires_at                   TEXT,
+    is_archived                  INTEGER NOT NULL DEFAULT 0,
+    archived_at                  TEXT,
+    allow_members_to_add_options INTEGER NOT NULL DEFAULT 1,
+    allow_multi_select           INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS poll_options (
+    id      TEXT PRIMARY KEY,
+    poll_id TEXT NOT NULL REFERENCES polls(id) ON DELETE CASCADE,
+    text    TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS poll_votes (
+    option_id TEXT NOT NULL REFERENCES poll_options(id) ON DELETE CASCADE,
+    member_id TEXT NOT NULL REFERENCES members(id),
+    PRIMARY KEY (option_id, member_id)
+  );
 `)
 
 export default db
