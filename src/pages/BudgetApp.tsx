@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SettingsIcon } from 'lucide-react';
 import { Member, Transaction } from '../data/mockData';
 import { Poll } from '../data/pollsData';
 import { GroupEvent, RsvpStatus } from '../data/eventsData';
@@ -8,7 +7,6 @@ import { TabBar } from '../components/TabBar';
 import { HomeTab } from '../components/HomeTab';
 import { FeedTab } from '../components/FeedTab';
 import { MembersTab } from '../components/MembersTab';
-import { AnalyticsTab } from '../components/AnalyticsTab';
 import { SettingsTab } from '../components/SettingsTab';
 import { PollsTab } from '../components/PollsTab';
 import { AddTransactionSheet } from '../components/AddTransactionSheet';
@@ -39,8 +37,6 @@ export function BudgetApp() {
   const [isCreatePollOpen, setIsCreatePollOpen] = useState(false);
   const [selectedPoll, setSelectedPoll] = useState<Poll | null>(null);
   const [isPollDetailOpen, setIsPollDetailOpen] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-
   // Calendar state
   const [calendarAvailability, setCalendarAvailability] =
     useState<CalendarAvailability>({})
@@ -332,14 +328,7 @@ export function BudgetApp() {
       className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
 
       <div className="max-w-md mx-auto h-full relative flex flex-col">
-        <button
-          onClick={() => setShowSettings(true)}
-          className="absolute top-4 right-4 z-40 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        >
-          <SettingsIcon size={20} className="text-gray-400 dark:text-gray-500" />
-        </button>
-
-        {activeTab !== 'home' && activeTab !== 'polls' && activeTab !== 'calendar' &&
+        {activeTab !== 'home' && activeTab !== 'polls' && activeTab !== 'calendar' && activeTab !== 'settings' &&
         <BalanceHeader
           balance={totalBalance}
           onAddTransaction={() => setIsSheetOpen(true)} />
@@ -359,6 +348,17 @@ export function BudgetApp() {
           {activeTab === 'activity' &&
           <FeedTab transactions={transactions} members={members} onEdit={handleEditTransaction} />
           }
+          {activeTab === 'settings' &&
+          <SettingsTab
+            members={members}
+            groupName={groupName}
+            onGroupNameChange={handleGroupNameChange}
+            isDark={isDark}
+            onToggleDark={() => setIsDark(d => {
+              localStorage.setItem('darkMode', String(!d));
+              return !d;
+            })} />
+          }
           {activeTab === 'members' && <MembersTab members={members} />}
           {activeTab === 'polls' &&
           <PollsTab
@@ -369,13 +369,10 @@ export function BudgetApp() {
             onOpenPoll={handleOpenPoll}
             onVote={handleVote} />
           }
-          {activeTab === 'analytics' &&
-          <AnalyticsTab members={members} transactions={transactions} isDark={isDark} />
-          }
           {activeTab === 'calendar' && (
             <div className="flex-1 flex flex-col overflow-hidden">
               {/* Sub-tab switcher */}
-              <div className="flex items-center justify-center gap-1 pt-14 pb-2 px-4">
+              <div className="flex items-center justify-center gap-1 pt-4 pb-2 px-4">
                 <button
                   onClick={() => setCalendarSubTab('availability')}
                   className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
@@ -419,21 +416,6 @@ export function BudgetApp() {
         </main>
 
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {showSettings && (
-          <div className="absolute inset-0 z-40 bg-white dark:bg-gray-950 flex flex-col">
-            <SettingsTab
-              members={members}
-              groupName={groupName}
-              onGroupNameChange={handleGroupNameChange}
-              isDark={isDark}
-              onToggleDark={() => setIsDark(d => {
-                localStorage.setItem('darkMode', String(!d));
-                return !d;
-              })}
-              onClose={() => setShowSettings(false)} />
-          </div>
-        )}
 
         <AddTransactionSheet
           isOpen={isSheetOpen}
