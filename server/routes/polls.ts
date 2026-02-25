@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { randomUUID } from 'node:crypto'
 import db from '../db.js'
 import type { Variables } from '../middleware/auth.js'
-import { broadcastSSE } from './events.js'
+import { broadcastSSE } from './sse.js'
 
 export const pollsRouter = new Hono<{ Variables: Variables }>()
 
@@ -54,6 +54,7 @@ function serializePoll(row: PollRow) {
     archivedAt: row.archived_at ?? undefined,
     allowMembersToAddOptions: !!row.allow_members_to_add_options,
     allowMultiSelect: !!row.allow_multi_select,
+    eventId: (row as PollRow & { event_id?: string | null }).event_id ?? null,
     options: options.map((o) => ({
       id: o.id,
       text: o.text,
@@ -84,6 +85,7 @@ pollsRouter.post('/', async (c) => {
     expiresAt?: string
     allowMembersToAddOptions?: boolean
     allowMultiSelect?: boolean
+    eventId?: string
   }>()
 
   if (!body.title?.trim()) return c.json({ error: 'title is required' }, 400)
@@ -95,8 +97,8 @@ pollsRouter.post('/', async (c) => {
   const now = new Date().toISOString()
 
   db.prepare(`
-    INSERT INTO polls (id, emoji, title, creator_id, created_at, expires_at, allow_members_to_add_options, allow_multi_select)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO polls (id, emoji, title, creator_id, created_at, expires_at, allow_members_to_add_options, allow_multi_select, event_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     pollId,
     body.emoji || '📊',
@@ -106,6 +108,7 @@ pollsRouter.post('/', async (c) => {
     body.expiresAt ?? null,
     body.allowMembersToAddOptions !== false ? 1 : 0,
     body.allowMultiSelect ? 1 : 0,
+    body.eventId ?? null,
   )
 
   const insertOption = db.prepare('INSERT INTO poll_options (id, poll_id, text) VALUES (?, ?, ?)')

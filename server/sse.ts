@@ -1,1 +1,1 @@
-export { broadcastSSE } from './routes/events.js'
+export { broadcastSSE } from './routes/sse.js'

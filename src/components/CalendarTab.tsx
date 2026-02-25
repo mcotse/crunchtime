@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { Member } from '../data/mockData'
+import { GroupEvent } from '../data/eventsData'
 import {
   CalendarAvailability,
   dateKey,
@@ -16,6 +17,7 @@ interface CalendarTabProps {
   members: Member[]
   currentUserId: string
   onDayTap: (dateStr: string) => void
+  events?: GroupEvent[]
 }
 
 const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -33,7 +35,15 @@ export function CalendarTab({
   members,
   currentUserId,
   onDayTap,
+  events = [],
 }: CalendarTabProps) {
+  const eventsByDate = new Map<string, GroupEvent[]>()
+  for (const ev of events) {
+    const arr = eventsByDate.get(ev.date) ?? []
+    arr.push(ev)
+    eventsByDate.set(ev.date, arr)
+  }
+
   const now = today()
   const [viewYear, setViewYear] = useState(now.getFullYear())
   const [viewMonth, setViewMonth] = useState(now.getMonth())
@@ -84,7 +94,7 @@ export function CalendarTab({
   return (
     <div className="flex-1 flex flex-col pb-24">
       {/* Month navigation */}
-      <div className="flex items-center justify-between px-5 pt-14 pb-3">
+      <div className="flex items-center justify-between px-5 pt-2 pb-3">
         <button
           onClick={handlePrevMonth}
           className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
@@ -207,6 +217,13 @@ export function CalendarTab({
                 {day}
               </span>
 
+              {/* Event emoji indicator */}
+              {eventsByDate.has(key) && (
+                <span className="text-[11px] leading-none">
+                  {eventsByDate.get(key)![0].emoji}
+                </span>
+              )}
+
               {/* Unique people count */}
               {hasAnyAvail && !past ? (
                 <span
@@ -215,9 +232,9 @@ export function CalendarTab({
                 >
                   ☀️ {uniqueCount}
                 </span>
-              ) : (
+              ) : !eventsByDate.has(key) ? (
                 <div className="h-8" />
-              )}
+              ) : null}
             </motion.button>
           )
         })}

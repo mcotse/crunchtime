@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import db from '../db.js'
 import type { Variables } from '../middleware/auth.js'
-import { broadcastSSE } from './events.js'
+import { broadcastSSE } from './sse.js'
 
 export const calendarRouter = new Hono<{ Variables: Variables }>()
 
