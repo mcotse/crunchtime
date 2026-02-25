@@ -16,6 +16,9 @@ export function broadcastSSE(event: string, data: unknown): void {
 }
 
 sseRouter.get('/', (c) => {
+  c.header('Content-Type', 'text/event-stream')
+  c.header('Cache-Control', 'no-cache')
+  c.header('Connection', 'keep-alive')
   return stream(c, async (s) => {
     const client = {
       write: (payload: string) => s.write(payload),

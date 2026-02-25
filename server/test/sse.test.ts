@@ -5,20 +5,12 @@ beforeAll(() => {
 })
 
 describe('GET /api/sse', () => {
-  it('responds with SSE content-type', async () => {
+  it('responds with SSE content-type and 200', async () => {
     const { app } = await import('../index.js')
-    const controller = new AbortController()
-    const resPromise = app.request('/api/sse', { signal: controller.signal })
-    // Abort immediately to not hang
-    controller.abort()
-    // The promise may reject due to abort or resolve with the response
-    const res = await resPromise.catch(() => null)
-    if (res) {
-      const ct = res.headers.get('content-type')
-      if (ct) {
-        expect(ct).toContain('text/event-stream')
-      }
-    }
-    // If aborted before headers received or no content-type, just pass
+    const res = await app.request('/api/sse')
+    // Cancel body immediately so the stream doesn't hold the test open
+    await res.body?.cancel()
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toContain('text/event-stream')
   })
 })
