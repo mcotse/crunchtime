@@ -138,6 +138,7 @@ All mutations broadcast a `poll_updated` SSE event (via `GET /api/events`) with 
 - **Inline voting** on PollCard — tap an option to vote without opening the detail sheet.
 - **Voter avatars** on PollCard show stacked colored circles (icons only, no names). Detail sheet shows full names.
 - **Emoji picker** in CreatePollSheet offers 18 preset emojis.
+- **"You" pill** on PollCard — the option(s) the current user voted for show a small `You` badge inline next to the option text, between the label and the percentage.
 - **Unsaved changes warning** when closing CreatePollSheet with content.
 
 ---
