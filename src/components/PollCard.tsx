@@ -233,6 +233,11 @@ export function PollCard({
                     >
                       {option.text}
                     </span>
+                    {isVoted && (
+                      <span className="flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-black dark:bg-white text-white dark:text-black leading-none">
+                        You
+                      </span>
+                    )}
                     <span
                       className={`text-sm font-semibold tabular-nums flex-shrink-0 ${isLeading && !isOpen ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
                     >
