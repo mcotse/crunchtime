@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-worker:
+    name: Deploy Cloudflare Worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-backend:
+    name: Rebuild and restart Hono server
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest code
+        run: |
+          cd /Users/mcotse/Developer/crunchtime
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Install dependencies
+        run: |
+          cd /Users/mcotse/Developer/crunchtime
+          npm ci
+
+      - name: Build server
+        run: |
+          cd /Users/mcotse/Developer/crunchtime
+          npx tsc -p tsconfig.server.json
+
+      - name: Restart server
+        run: |
+          launchctl kickstart -k gui/$(id -u)/com.crunchtime.server
