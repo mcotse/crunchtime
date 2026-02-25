@@ -10,7 +10,9 @@
     "seed": "tsx server/seed.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "test:frontend": "vitest run --config vitest.frontend.config.ts",
+    "test:frontend:watch": "vitest --config vitest.frontend.config.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -27,6 +29,9 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.13.4",
     "@types/react": "^18.3.18",
@@ -34,6 +39,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "agent-browser": "^0.13.0",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^28.1.0",
     "postcss": "^8.5.2",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.21.0",
