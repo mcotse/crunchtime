@@ -1,5 +1,4 @@
 import { serve } from '@hono/node-server'
-import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { membersRouter } from './routes/members.js'
 import { transactionsRouter } from './routes/transactions.js'
@@ -23,9 +22,6 @@ app.route('/api/polls', pollsRouter)
 app.route('/api/calendar', calendarRouter)
 app.route('/api/sse', sseRouter)
 app.route('/api/events', eventsRouter)
-
-// Serve React build in production
-app.use('/*', serveStatic({ root: './dist/client' }))
 
 if (!process.env.VITEST) {
   const PORT = Number(process.env.PORT ?? 3000)
