@@ -1,6 +1,8 @@
 # Crunchtime — Analytics Feature
 
-The analytics tab provides a group balance over time chart and a per-member contribution leaderboard. Balances are derived entirely from transactions — there is no stored balance column.
+> **Status:** The Analytics tab has been removed from the bottom navigation. The `AnalyticsTab` component remains in the codebase and may be surfaced as a CTA within the Activity (Recent Activity) tab in a future iteration.
+
+The analytics feature provides a group balance over time chart and a per-member contribution leaderboard. Balances are derived entirely from transactions — there is no stored balance column.
 
 ---
 

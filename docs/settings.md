@@ -86,7 +86,7 @@ The client listens for this event and updates `groupName` state directly from th
 
 | Component | File | Role |
 |-----------|------|------|
-| SettingsTab | `src/components/SettingsTab.tsx` | Full-screen overlay with group name, appearance, members, and support sections |
+| SettingsTab | `src/components/SettingsTab.tsx` | Tab rendered inline via the bottom nav; group name, appearance, members, and support sections |
 
 ### Props
 
@@ -100,6 +100,10 @@ interface SettingsTabProps {
   onClose?: () => void
 }
 ```
+
+### Navigation
+
+Settings is accessible as the last tab (bottom-right) in the `TabBar`. It replaced the previous pattern of an absolute-positioned settings gear icon at the top-right that opened a full-screen overlay. The `onClose` prop is now unused (not passed).
 
 ### UI Behavior
 
