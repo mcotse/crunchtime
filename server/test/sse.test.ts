@@ -4,11 +4,11 @@ beforeAll(() => {
   process.env.DB_PATH = ':memory:'
 })
 
-describe('GET /api/events', () => {
+describe('GET /api/sse', () => {
   it('responds with SSE content-type', async () => {
     const { app } = await import('../index.js')
     const controller = new AbortController()
-    const resPromise = app.request('/api/events', { signal: controller.signal })
+    const resPromise = app.request('/api/sse', { signal: controller.signal })
     // Abort immediately to not hang
     controller.abort()
     // The promise may reject due to abort or resolve with the response
