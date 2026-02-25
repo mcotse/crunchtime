@@ -112,3 +112,163 @@ describe('POST /api/polls/:id/options', () => {
     expect(res.status).toBe(403)
   })
 })
+
+describe('POST /api/polls — create', () => {
+  beforeEach(() => seedMembers())
+
+  it('creates a poll and returns 201', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Dinner spot?', options: ['Tacos', 'Pizza'] }),
+    })
+    expect(res.status).toBe(201)
+    const body = (await res.json()) as any
+    expect(body.title).toBe('Dinner spot?')
+    expect(body.options).toHaveLength(2)
+    expect(body.creatorId).toBe('m1')
+  })
+
+  it('rejects missing title with 400', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ options: ['A', 'B'] }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects fewer than 2 options with 400', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Solo', options: ['Only one'] }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects empty option text with 400', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Empty opts', options: ['Valid', ''] }),
+    })
+    expect(res.status).toBe(400)
+  })
+})
+
+describe('GET /api/polls', () => {
+  beforeEach(() => seedMembers())
+
+  it('returns an array of polls', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls')
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as any[]
+    expect(Array.isArray(body)).toBe(true)
+  })
+})
+
+describe('GET /api/polls/:id', () => {
+  beforeEach(() => seedMembers())
+
+  it('returns a single poll with options and voterIds', async () => {
+    const app = await getApp()
+    await seedPoll({ id: 'poll-get-single', creatorId: 'm1' })
+    const res = await app.request('/api/polls/poll-get-single')
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as any
+    expect(body.id).toBe('poll-get-single')
+    expect(body.options).toHaveLength(2)
+    expect(body.options[0]).toHaveProperty('voterIds')
+  })
+
+  it('returns 404 for unknown poll id', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/polls/no-such-poll')
+    expect(res.status).toBe(404)
+  })
+})
+
+describe('PATCH /api/polls/:id/archive and /unarchive', () => {
+  beforeEach(() => seedMembers())
+
+  it('allows creator to archive their poll', async () => {
+    const app = await getApp()
+    await seedPoll({ id: 'poll-archive', creatorId: 'm1' })
+    const res = await app.request('/api/polls/poll-archive/archive', { method: 'PATCH' })
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as any
+    expect(body.isArchived).toBe(true)
+  })
+
+  it('rejects archive by non-creator with 403', async () => {
+    const app = await getApp()
+    await seedPoll({ id: 'poll-archive-reject', creatorId: 'm2' })
+    const res = await app.request('/api/polls/poll-archive-reject/archive', { method: 'PATCH' })
+    expect(res.status).toBe(403)
+  })
+
+  it('allows creator to unarchive their poll', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    await seedPoll({ id: 'poll-unarchive', creatorId: 'm1' })
+    db.prepare('UPDATE polls SET is_archived = 1 WHERE id = ?').run('poll-unarchive')
+
+    const res = await app.request('/api/polls/poll-unarchive/unarchive', { method: 'PATCH' })
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as any
+    expect(body.isArchived).toBe(false)
+  })
+})
+
+describe('POST /api/polls/:id/vote — validation', () => {
+  beforeEach(() => seedMembers())
+
+  it('rejects voting on expired poll with 400', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    await seedPoll({ id: 'poll-expired', creatorId: 'm1' })
+    db.prepare('UPDATE polls SET expires_at = ? WHERE id = ?')
+      .run('2020-01-01T00:00:00.000Z', 'poll-expired')
+
+    const opts = db.prepare('SELECT id FROM poll_options WHERE poll_id = ?').all('poll-expired') as { id: string }[]
+    const res = await app.request('/api/polls/poll-expired/vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ optionIds: [opts[0].id] }),
+    })
+    expect(res.status).toBe(400)
+    const body = (await res.json()) as any
+    expect(body.error).toMatch(/closed/i)
+  })
+
+  it('rejects multi-select vote when not allowed with 400', async () => {
+    const app = await getApp()
+    const { optionIds } = await seedPoll({ id: 'poll-no-multi', creatorId: 'm1' })
+    // allow_multi_select defaults to 0 in seedPoll
+    const res = await app.request('/api/polls/poll-no-multi/vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ optionIds }),
+    })
+    expect(res.status).toBe(400)
+    const body = (await res.json()) as any
+    expect(body.error).toMatch(/multiple/i)
+  })
+
+  it('rejects vote with invalid option id with 400', async () => {
+    const app = await getApp()
+    await seedPoll({ id: 'poll-bad-opt', creatorId: 'm1' })
+    const res = await app.request('/api/polls/poll-bad-opt/vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ optionIds: ['not-a-real-option'] }),
+    })
+    expect(res.status).toBe(400)
+  })
+})

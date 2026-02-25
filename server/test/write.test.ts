@@ -88,3 +88,110 @@ describe('PATCH /api/settings', () => {
     expect(res.status).toBe(400)
   })
 })
+
+describe('POST /api/transactions — validation', () => {
+  beforeEach(() => seedMember())
+
+  it('rejects non-existent memberId with 400', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: -10, description: 'Test', memberId: 'does-not-exist' }),
+    })
+    expect(res.status).toBe(400)
+    const body = await res.json() as { error: string }
+    expect(body.error).toMatch(/memberId not found/i)
+  })
+
+  it('rejects whitespace-only description with 400', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: -10, description: '   ', memberId: 'm1' }),
+    })
+    expect(res.status).toBe(400)
+  })
+})
+
+describe('PATCH /api/transactions/:id', () => {
+  beforeEach(() => seedMember())
+
+  it('updates a transaction and returns 200', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('tx-patch-1', 'Original', -10, 'm1', '2026-01-01', 'General')
+    `).run()
+
+    const res = await app.request('/api/transactions/tx-patch-1', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: 'Updated', amount: -20 }),
+    })
+    expect(res.status).toBe(200)
+    const body = await res.json() as any
+    expect(body.description).toBe('Updated')
+    expect(body.amount).toBe(-20)
+  })
+
+  it('returns 404 for unknown transaction id', async () => {
+    const app = await getApp()
+    const res = await app.request('/api/transactions/no-such-tx', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: 'Updated' }),
+    })
+    expect(res.status).toBe(404)
+  })
+
+  it('rejects non-number amount with 400', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('tx-patch-2', 'Test', -10, 'm1', '2026-01-01', 'General')
+    `).run()
+
+    const res = await app.request('/api/transactions/tx-patch-2', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: 'not-a-number' }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects empty description with 400', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('tx-patch-3', 'Test', -10, 'm1', '2026-01-01', 'General')
+    `).run()
+
+    const res = await app.request('/api/transactions/tx-patch-3', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: '' }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects non-existent memberId with 400', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO transactions (id, description, amount, member_id, date, category)
+      VALUES ('tx-patch-4', 'Test', -10, 'm1', '2026-01-01', 'General')
+    `).run()
+
+    const res = await app.request('/api/transactions/tx-patch-4', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: 'ghost-member' }),
+    })
+    expect(res.status).toBe(400)
+  })
+})
