@@ -1,9 +1,10 @@
 import db from './db.ts'
 import { MEMBERS, TRANSACTIONS } from '../src/data/mockData.ts'
 import { SEED_POLLS } from './seed-polls.ts'
+import { SEED_EVENTS } from './seed-events.ts'
 
-// Clear existing data
-db.exec('DELETE FROM calendar_availability; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM polls; DELETE FROM transactions; DELETE FROM members;')
+// Clear existing data (order matters due to FK constraints)
+db.exec('DELETE FROM event_rsvps; DELETE FROM calendar_availability; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM transactions; DELETE FROM polls; DELETE FROM events; DELETE FROM members;')
 
 // Seed members (without balance — computed from transactions)
 const insertMember = db.prepare(`
@@ -89,4 +90,25 @@ for (const s of calendarScenarios) {
   }
 }
 
-console.log(`Seeded ${MEMBERS.length} members, ${TRANSACTIONS.length} transactions, ${SEED_POLLS.length} polls, ${calendarCount} calendar entries.`)
+// Seed events
+const insertEvent = db.prepare(`
+  INSERT OR REPLACE INTO events (id, emoji, title, description, date, time, creator_id, created_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`)
+const insertRsvp = db.prepare('INSERT OR IGNORE INTO event_rsvps (event_id, member_id, status) VALUES (?, ?, ?)')
+
+for (const ev of SEED_EVENTS) {
+  insertEvent.run(ev.id, ev.emoji, ev.title, ev.description, ev.date, ev.time ?? null, ev.creatorId, ev.createdAt)
+  for (const rsvp of ev.rsvps) {
+    insertRsvp.run(ev.id, rsvp.memberId, rsvp.status)
+  }
+  // Link poll to event if specified
+  if ('linkedPollId' in ev && ev.linkedPollId) {
+    db.prepare('UPDATE polls SET event_id = ? WHERE id = ?').run(ev.id, ev.linkedPollId)
+  }
+}
+
+// Link some transactions to events (movie night expense)
+db.prepare('UPDATE transactions SET event_id = ? WHERE id = ?').run('ev6', 't4')
+
+console.log(`Seeded ${MEMBERS.length} members, ${TRANSACTIONS.length} transactions, ${SEED_POLLS.length} polls, ${calendarCount} calendar entries, ${SEED_EVENTS.length} events.`)

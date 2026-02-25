@@ -67,6 +67,36 @@ db.exec(`
     slot      TEXT NOT NULL CHECK(slot IN ('morning', 'evening')),
     PRIMARY KEY (member_id, date, slot)
   );
+
+  CREATE TABLE IF NOT EXISTS events (
+    id          TEXT PRIMARY KEY,
+    emoji       TEXT NOT NULL DEFAULT '🎉',
+    title       TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    date        TEXT NOT NULL,
+    time        TEXT,
+    creator_id  TEXT NOT NULL REFERENCES members(id),
+    created_at  TEXT NOT NULL,
+    is_archived INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS event_rsvps (
+    event_id  TEXT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    member_id TEXT NOT NULL REFERENCES members(id),
+    status    TEXT NOT NULL CHECK(status IN ('going', 'maybe', 'cant_go')),
+    PRIMARY KEY (event_id, member_id)
+  );
 `)
+
+// Idempotent migrations: add event_id to transactions and polls
+const txCols = db.pragma('table_info(transactions)') as Array<{ name: string }>
+if (!txCols.some(c => c.name === 'event_id')) {
+  db.exec('ALTER TABLE transactions ADD COLUMN event_id TEXT REFERENCES events(id)')
+}
+
+const pollCols = db.pragma('table_info(polls)') as Array<{ name: string }>
+if (!pollCols.some(c => c.name === 'event_id')) {
+  db.exec('ALTER TABLE polls ADD COLUMN event_id TEXT REFERENCES events(id)')
+}
 
 export default db

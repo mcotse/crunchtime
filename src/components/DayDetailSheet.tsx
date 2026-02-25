@@ -12,6 +12,7 @@ interface DayDetailSheetProps {
   members: Member[]
   currentUserId: string
   onToggle: (dateStr: string, slot: 'morning' | 'evening') => void
+  onCreateEvent?: (dateStr: string) => void
 }
 
 function formatDateLabel(dateStr: string): string {
@@ -152,6 +153,7 @@ export function DayDetailSheet({
   members,
   currentUserId,
   onToggle,
+  onCreateEvent,
 }: DayDetailSheetProps) {
   if (!dateStr) return null
 
@@ -284,6 +286,16 @@ export function DayDetailSheet({
                     Availability can't be edited for past dates
                   </p>
                 </div>
+              )}
+
+              {/* Create Event button */}
+              {!past && onCreateEvent && (
+                <button
+                  onClick={() => onCreateEvent(dateStr)}
+                  className="w-full mt-2 py-3 text-sm font-semibold text-black dark:text-white bg-gray-100 dark:bg-gray-800 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  🎉 Create Event
+                </button>
               )}
             </div>
           </motion.div>

@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import db from '../db.js'
-import { broadcastSSE } from './events.js'
+import { broadcastSSE } from './sse.js'
 
 export const settingsRouter = new Hono()
 

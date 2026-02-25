@@ -2,16 +2,16 @@ import { Hono } from 'hono'
 import { randomUUID } from 'node:crypto'
 import db from '../db.js'
 import type { Variables } from '../middleware/auth.js'
-import { broadcastSSE } from './events.js'
+import { broadcastSSE } from './sse.js'
 
 export const transactionsRouter = new Hono<{ Variables: Variables }>()
 
 transactionsRouter.get('/', (c) => {
   const rows = db.prepare(`
-    SELECT id, description, amount, member_id as memberId, date, category, edit_history as editHistory
+    SELECT id, description, amount, member_id as memberId, date, category, edit_history as editHistory, event_id as eventId
     FROM transactions ORDER BY date DESC, rowid DESC
   `).all() as Array<Record<string, unknown>>
-  return c.json(rows.map(r => ({ ...r, editHistory: JSON.parse(r.editHistory as string) })))
+  return c.json(rows.map(r => ({ ...r, editHistory: JSON.parse(r.editHistory as string), eventId: r.eventId ?? null })))
 })
 
 transactionsRouter.patch('/:id', async (c) => {
@@ -58,7 +58,7 @@ transactionsRouter.patch('/:id', async (c) => {
 })
 
 transactionsRouter.post('/', async (c) => {
-  const body = await c.req.json<{ amount: unknown; description: unknown; memberId: unknown; date: unknown; category: unknown }>()
+  const body = await c.req.json<{ amount: unknown; description: unknown; memberId: unknown; date: unknown; category: unknown; eventId?: unknown }>()
 
   if (typeof body.amount !== 'number' || isNaN(body.amount)) {
     return c.json({ error: 'amount must be a number' }, 400)
@@ -77,12 +77,14 @@ transactionsRouter.post('/', async (c) => {
   const date = typeof body.date === 'string' ? body.date : new Date().toISOString()
   const category = typeof body.category === 'string' ? body.category : 'General'
 
-  db.prepare(`
-    INSERT INTO transactions (id, description, amount, member_id, date, category)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(id, body.description.trim(), body.amount, body.memberId, date, category)
+  const eventId = typeof body.eventId === 'string' ? body.eventId : null
 
-  const tx = { id, description: body.description.trim(), amount: body.amount, memberId: body.memberId, date, category }
+  db.prepare(`
+    INSERT INTO transactions (id, description, amount, member_id, date, category, event_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(id, body.description.trim(), body.amount, body.memberId, date, category, eventId)
+
+  const tx = { id, description: body.description.trim(), amount: body.amount, memberId: body.memberId, date, category, eventId }
   broadcastSSE('transaction_added', tx)
   return c.json(tx, 201)
 })
