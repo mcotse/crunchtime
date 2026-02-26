@@ -33,7 +33,7 @@ export function HomeTab({
     currency: 'USD'
   }).format(Math.abs(balance));
   return (
-    <div className="flex-1 flex items-center justify-center px-4 pb-24 pt-4">
+    <div className="flex-1 flex items-center justify-center px-4 pb-24 pt-6">
       <motion.div
         initial={{
           opacity: 0,
@@ -44,10 +44,10 @@ export function HomeTab({
           y: 0
         }}
         transition={{
-          duration: 0.35,
+          duration: 0.25,
           ease: 'easeOut'
         }}
-        className="w-full space-y-4">
+        className="w-full space-y-6">
 
         {/* Balance + stats combined */}
         <div className="flex flex-col items-center space-y-6 pb-4">
@@ -79,12 +79,12 @@ export function HomeTab({
               delay: 0.1,
               ease: 'easeOut'
             }}
-            className="grid grid-cols-2 gap-3 w-full">
+            className="grid grid-cols-2 gap-4 w-full">
 
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center space-x-1.5 text-green-600">
                 <ArrowUpIcon size={12} strokeWidth={2.5} />
-                <span className="text-[11px] font-medium uppercase tracking-wider">
+                <span className="text-xs font-medium uppercase tracking-widest">
                   Income
                 </span>
               </div>
@@ -93,10 +93,10 @@ export function HomeTab({
               </span>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 flex flex-col space-y-2 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center space-x-1.5 text-red-600">
                 <ArrowDownIcon size={12} strokeWidth={2.5} />
-                <span className="text-[11px] font-medium uppercase tracking-wider">
+                <span className="text-xs font-medium uppercase tracking-widest">
                   Expenses
                 </span>
               </div>
@@ -123,9 +123,9 @@ export function HomeTab({
 
           <Button
             onClick={onAddTransaction}
-            className="rounded-full h-10 px-6 shadow-none bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+            className="rounded-full h-10 px-6 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
 
-            <PlusIcon size={15} className="mr-2" />
+            <PlusIcon size={16} className="mr-2" />
             Add Transaction
           </Button>
         </motion.div>

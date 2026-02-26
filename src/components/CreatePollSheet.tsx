@@ -137,12 +137,11 @@ export function CreatePollSheet({
               damping: 25,
               stiffness: 200,
             }}
-            style={{ x: '-50%' }}
-            className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-[51] h-[90vh] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
-              <h2 className="text-xl font-bold dark:text-white">Create Poll</h2>
+              <h2 className="text-xl font-semibold text-black dark:text-white">Create Poll</h2>
               <button
                 onClick={handleClose}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors dark:text-white"
@@ -155,7 +154,7 @@ export function CreatePollSheet({
             <div className="flex-1 overflow-y-auto p-6 pb-32 space-y-7">
               {/* Emoji + Title */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest">
                   Question
                 </label>
                 <div className="flex items-start gap-3">
@@ -168,7 +167,7 @@ export function CreatePollSheet({
                       {emoji}
                     </button>
                     {showEmojiPicker && (
-                      <div className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 p-2 grid grid-cols-6 gap-1 z-10">
+                      <div className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 p-2 grid grid-cols-6 gap-1 z-10">
                         {['📊', '🍽️', '📺', '📅', '💰', '✈️', '🏷️', '🎉', '🏠', '🎮', '🛒', '☕', '🎵', '💡', '🗳️', '⚡', '🎯', '❓'].map((e) => (
                           <button
                             key={e}
@@ -186,7 +185,7 @@ export function CreatePollSheet({
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Ask the group something..."
-                    className={`flex-1 text-base font-medium bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${showErrors && !title.trim() ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                    className={`flex-1 text-base font-medium bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${showErrors && !title.trim() ? 'border-red-400' : 'border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white'}`}
                     autoFocus
                   />
                 </div>
@@ -200,7 +199,7 @@ export function CreatePollSheet({
 
               {/* Options */}
               <div className="space-y-3">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Options
                 </label>
                 <div className="space-y-2">
@@ -226,7 +225,7 @@ export function CreatePollSheet({
                               handleOptionChange(index, e.target.value)
                             }
                             placeholder={`Option ${index + 1}`}
-                            className={`w-full text-sm bg-transparent outline-none border-b pb-1.5 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${isDuplicate || isEmpty ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                            className={`w-full text-sm bg-transparent outline-none border-b pb-1.5 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${isDuplicate || isEmpty ? 'border-red-400' : 'border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white'}`}
                           />
                           {isDuplicate && (
                             <p className="text-[11px] text-red-500 mt-0.5">
@@ -263,11 +262,11 @@ export function CreatePollSheet({
 
               {/* Settings */}
               <div className="space-y-3">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Settings
                 </label>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 dark:border-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 dark:border-gray-800">
                     <div className="flex-1 pr-4">
                       <p className="text-sm font-medium text-black dark:text-white">
                         Members can add options
@@ -311,9 +310,9 @@ export function CreatePollSheet({
 
               {/* Expiration */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Expiration Date
-                  <span className="ml-1.5 normal-case font-normal text-gray-300 dark:text-gray-600">
+                  <span className="ml-1.5 normal-case font-normal text-gray-400 dark:text-gray-500">
                     (optional)
                   </span>
                 </label>
@@ -322,9 +321,9 @@ export function CreatePollSheet({
                   value={expiresAt}
                   onChange={(e) => setExpiresAt(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors dark:text-white dark:color-scheme-dark"
+                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors dark:text-white dark:color-scheme-dark"
                 />
-                <p className="text-[11px] text-gray-400">
+                <p className="text-[11px] text-gray-400 dark:text-gray-500">
                   Poll closes at end of day (local time).
                 </p>
               </div>
@@ -336,7 +335,7 @@ export function CreatePollSheet({
                 type="button"
                 onClick={handleCreate}
                 disabled={showErrors && !isValid}
-                className="w-full h-14 text-base bg-black dark:bg-white text-white dark:text-black rounded-xl disabled:opacity-40"
+                className="w-full h-12 text-base bg-black dark:bg-white text-white dark:text-black rounded-full disabled:opacity-40"
               >
                 Create Poll
               </Button>
@@ -358,9 +357,9 @@ export function CreatePollSheet({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="fixed inset-x-6 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl p-6 z-[61] shadow-2xl"
+                  className="fixed left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-sm top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl p-6 z-[61] shadow-2xl"
                 >
-                  <h3 className="text-base font-bold text-black dark:text-white mb-1">
+                  <h3 className="text-base font-semibold text-black dark:text-white mb-1">
                     Discard poll?
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
@@ -370,13 +369,13 @@ export function CreatePollSheet({
                     <Button
                       onClick={() => setShowUnsavedWarning(false)}
                       variant="secondary"
-                      className="flex-1 rounded-xl"
+                      className="flex-1 rounded-full"
                     >
                       Keep editing
                     </Button>
                     <Button
                       onClick={resetAndClose}
-                      className="flex-1 rounded-xl bg-red-600 hover:bg-red-700 text-white"
+                      className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white"
                     >
                       Discard
                     </Button>

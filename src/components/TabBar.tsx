@@ -34,7 +34,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   }];
 
   return (
-    <div className="tab-bar fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 pb-safe pt-2 px-4 z-40">
+    <div className="tab-bar fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-t border-gray-100/80 dark:border-gray-800/80 pb-safe pt-2 px-4 z-40">
       <div className="max-w-md mx-auto flex justify-between items-center h-16">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -43,7 +43,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               aria-label={tab.label}
-              className="relative flex flex-col items-center justify-center w-12 h-full space-y-1">
+              className="relative flex flex-col items-center justify-center flex-1 h-full space-y-1 active:scale-90 transition-all duration-100">
 
               <div
                 className={`relative p-2 rounded-xl transition-colors duration-200 ${isActive ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-600'}`}>
@@ -58,8 +58,9 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
                   }}
                   transition={{
                     type: 'spring',
-                    stiffness: 500,
-                    damping: 30
+                    stiffness: 380,
+                    damping: 28,
+                    mass: 0.8
                   }} />
 
                 }

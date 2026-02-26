@@ -24,7 +24,7 @@ export function ConfirmDeleteModal({
         <>
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            animate={{ opacity: 0.3 }}
             exit={{ opacity: 0 }}
             onClick={onCancel}
             className="fixed inset-0 bg-black z-[70]"
@@ -41,7 +41,7 @@ export function ConfirmDeleteModal({
                 <div className="mx-auto w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-4">
                   <TriangleAlertIcon size={24} className="text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-black dark:text-white mb-1.5">
+                <h3 className="text-lg font-semibold text-black dark:text-white mb-1.5">
                   {title}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -51,14 +51,14 @@ export function ConfirmDeleteModal({
               <div className="px-6 pb-6 flex gap-3">
                 <Button
                   variant="secondary"
-                  className="flex-1 h-12"
+                  className="flex-1 h-12 rounded-full"
                   onClick={onCancel}
                 >
                   Cancel
                 </Button>
                 <Button
                   variant="danger"
-                  className="flex-1 h-12"
+                  className="flex-1 h-12 rounded-full"
                   onClick={onConfirm}
                 >
                   Delete

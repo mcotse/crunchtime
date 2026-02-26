@@ -118,18 +118,10 @@ export function SettingsTab({
     if (trimmed) onGroupNameChange(trimmed);
     setIsEditingName(false);
   };
-  const bg = isDark ? 'bg-gray-950' : 'bg-white';
-  const cardBg = isDark ? 'bg-gray-900' : 'bg-white';
-  const cardBorder = isDark ? 'border-gray-800' : 'border-gray-100';
-  const textPrimary = isDark ? 'text-white' : 'text-black';
-  const textMuted = isDark ? 'text-gray-400' : 'text-gray-400';
-  const divider = isDark ? 'border-gray-800' : 'border-gray-100';
-  const hoverBg = isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-50';
   const handleLogout = async () => {
     const { url } = await fetch('/api/logout').then(r => r.json());
     if (url) window.location.href = url;
   };
-
   const settingsGroups: Array<{ title: string; items: Array<{ icon: React.ElementType; label: string; value?: string; color?: string; onClick?: () => void }> }> = [
   {
     title: 'Support',
@@ -144,13 +136,13 @@ export function SettingsTab({
   }];
 
   return (
-    <div className={`flex-1 overflow-y-auto px-4 pb-24 space-y-6 pt-4 ${bg}`}>
+    <div className="pt-6 space-y-6 flex-1 overflow-y-auto px-4 pb-24 bg-white dark:bg-gray-950">
       <div className="flex items-center justify-between px-2">
-        <h2 className={`text-lg font-semibold ${textPrimary}`}>Settings</h2>
+        <h2 className="text-lg font-semibold text-black dark:text-white">Settings</h2>
         {onClose && (
           <button
             onClick={onClose}
-            className={`p-2 -mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${textPrimary}`}
+            className="p-2 -mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-black dark:text-white"
           >
             <XIcon size={22} />
           </button>
@@ -159,27 +151,27 @@ export function SettingsTab({
 
       {/* Install app banner */}
       {showInstallBanner && (
-        <div className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+        <div className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
           {showIOSGuide ? (
             <div className="px-2 py-4 space-y-2">
               <div className="flex items-center justify-between">
-                <span className={`text-sm font-semibold ${textPrimary}`}>Add to Home Screen</span>
-                <button onClick={() => setShowIOSGuide(false)} className={`p-1 ${textMuted}`}>
+                <span className="text-sm font-semibold text-black dark:text-white">Add to Home Screen</span>
+                <button onClick={() => setShowIOSGuide(false)} className="p-1 text-gray-400 dark:text-gray-500">
                   <XIcon size={16} />
                 </button>
               </div>
-              <div className={`text-sm space-y-1.5 ${textMuted}`}>
+              <div className="text-sm space-y-1.5 text-gray-400 dark:text-gray-500">
                 {isIOSChrome ? (
                   <>
-                    <p>1. Open this page in <strong className={textPrimary}>Safari</strong></p>
+                    <p>1. Open this page in <strong className="text-black dark:text-white">Safari</strong></p>
                     <p>2. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button</p>
-                    <p>3. Tap <strong className={textPrimary}>Add to Home Screen</strong></p>
+                    <p>3. Tap <strong className="text-black dark:text-white">Add to Home Screen</strong></p>
                   </>
                 ) : (
                   <>
                     <p>1. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button</p>
-                    <p>2. Scroll down and tap <strong className={textPrimary}>Add to Home Screen</strong></p>
-                    <p>3. Tap <strong className={textPrimary}>Add</strong></p>
+                    <p>2. Scroll down and tap <strong className="text-black dark:text-white">Add to Home Screen</strong></p>
+                    <p>3. Tap <strong className="text-black dark:text-white">Add</strong></p>
                   </>
                 )}
               </div>
@@ -187,18 +179,18 @@ export function SettingsTab({
           ) : (
             <button
               onClick={handleInstall}
-              className={`w-full flex items-center gap-3 px-2 py-4 transition-colors ${hoverBg}`}
+              className="w-full flex items-center gap-3 px-2 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <div className="w-10 h-10 rounded-xl bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
                 <DownloadIcon size={18} className="text-white dark:text-black" />
               </div>
               <div className="flex-1 text-left">
-                <p className={`text-sm font-semibold ${textPrimary}`}>Install Crunchtime</p>
-                <p className={`text-xs ${textMuted}`}>
+                <p className="text-sm font-semibold text-black dark:text-white">Install Crunchtime</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {isIOS ? 'Add to your home screen' : 'Install as an app on your device'}
                 </p>
               </div>
-              <ChevronRightIcon size={16} className={textMuted} />
+              <ChevronRightIcon size={16} className="text-gray-400 dark:text-gray-500" />
             </button>
           )}
         </div>
@@ -207,15 +199,15 @@ export function SettingsTab({
       {/* Group name section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
+          className="text-xs font-medium uppercase tracking-widest px-2 text-gray-400 dark:text-gray-500">
 
           Group
         </h3>
         <div
-          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
 
           <div className="flex items-center justify-between px-2 py-4">
-            <span className={`text-sm font-medium ${textMuted}`}>Name</span>
+            <span className="text-sm font-medium text-gray-400 dark:text-gray-500">Name</span>
             {isEditingName ?
             <div className="flex items-center space-x-2 flex-1 ml-4">
                 <input
@@ -226,19 +218,19 @@ export function SettingsTab({
                   if (e.key === 'Enter') handleSaveName();
                   if (e.key === 'Escape') setIsEditingName(false);
                 }}
-                className={`flex-1 text-sm font-medium text-right bg-transparent outline-none border-b pb-0.5 ${textPrimary} ${isDark ? 'border-gray-600' : 'border-gray-300'}`} />
+                className="flex-1 text-sm font-medium text-right bg-transparent outline-none border-b pb-0.5 text-black dark:text-white border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors" />
 
                 <button
                 onClick={handleSaveName}
                 aria-label="Save group name"
-                className={`transition-colors flex-shrink-0 ${textPrimary}`}>
+                className="transition-colors flex-shrink-0 text-black dark:text-white">
 
                   <CheckIcon size={16} />
                 </button>
               </div> :
 
             <div className="flex items-center space-x-2">
-                <span className={`text-sm font-medium ${textPrimary}`}>
+                <span className="text-sm font-medium text-black dark:text-white">
                   {groupName}
                 </span>
                 <button
@@ -247,7 +239,7 @@ export function SettingsTab({
                   setIsEditingName(true);
                 }}
                 aria-label="Edit group name"
-                className={`transition-colors ${textMuted}`}>
+                className="transition-colors text-gray-400 dark:text-gray-500">
 
                   <PencilIcon size={13} />
                 </button>
@@ -257,20 +249,19 @@ export function SettingsTab({
         </div>
       </div>
 
-      {/* Appearance */}
+      {/* Preferences */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
-
-          Appearance
+          className="text-xs font-medium uppercase tracking-widest px-2 text-gray-400 dark:text-gray-500">
+          Preferences
         </h3>
         <div
-          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
 
-          <div className="flex items-center justify-between px-2 py-4">
+          <div className="flex items-center justify-between px-2 py-4 border-b border-gray-100 dark:border-gray-800 last:border-0">
             <div className="flex items-center space-x-3">
-              <MoonIcon size={20} className={textPrimary} />
-              <span className={`text-base font-medium ${textPrimary}`}>
+              <MoonIcon size={20} className="text-black dark:text-white" />
+              <span className="text-sm font-medium text-black dark:text-white">
                 Dark Mode
               </span>
             </div>
@@ -278,29 +269,19 @@ export function SettingsTab({
               type="button"
               onClick={onToggleDark}
               aria-label="Toggle dark mode"
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isDark ? 'bg-black' : 'bg-gray-200'}`}>
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isDark ? 'bg-white' : 'bg-gray-200'}`}>
 
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${isDark ? 'translate-x-6' : 'translate-x-1'}`} />
+                className={`inline-block h-4 w-4 transform rounded-full shadow transition-transform ${isDark ? 'translate-x-6 bg-black' : 'translate-x-1 bg-white'}`} />
 
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Notifications */}
-      {showPushToggle && (
-        <div className="space-y-2">
-          <h3
-            className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
-            Notifications
-          </h3>
-          <div
-            className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          {showPushToggle && (
             <div className="flex items-center justify-between px-2 py-4">
               <div className="flex items-center space-x-3">
-                <BellIcon size={20} className={textPrimary} />
-                <span className={`text-base font-medium ${textPrimary}`}>
+                <BellIcon size={20} className="text-black dark:text-white" />
+                <span className="text-sm font-medium text-black dark:text-white">
                   Push Notifications
                 </span>
               </div>
@@ -309,28 +290,28 @@ export function SettingsTab({
                 onClick={handleTogglePush}
                 disabled={pushLoading}
                 aria-label="Toggle push notifications"
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${pushEnabled ? 'bg-black' : 'bg-gray-200'} ${pushLoading ? 'opacity-50' : ''}`}>
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${pushEnabled ? 'bg-black dark:bg-white' : 'bg-gray-200 dark:bg-gray-600'} ${pushLoading ? 'opacity-50' : ''}`}>
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${pushEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-black shadow transition-transform ${pushEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Broadcast (admin only) */}
       {isAdmin && (
         <div className="space-y-2">
           <h3
-            className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
+            className="text-xs font-medium uppercase tracking-widest px-2 text-gray-400 dark:text-gray-500">
             Broadcast
           </h3>
           <div
-            className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+            className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
             <div className="px-2 py-4 space-y-3">
               <div className="flex items-center space-x-3">
-                <SendIcon size={20} className={textPrimary} />
-                <span className={`text-base font-medium ${textPrimary}`}>
+                <SendIcon size={20} className="text-black dark:text-white" />
+                <span className="text-sm font-medium text-black dark:text-white">
                   Send Push to Everyone
                 </span>
               </div>
@@ -340,15 +321,15 @@ export function SettingsTab({
                 onChange={(e) => setBroadcastMsg(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleBroadcast(); }}
                 placeholder="Type a message..."
-                className={`w-full text-sm rounded-lg px-3 py-2 border outline-none ${cardBg} ${cardBorder} ${textPrimary}`}
+                className="w-full text-sm rounded-2xl px-3 py-2 border outline-none bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-black dark:text-white"
               />
               <button
                 onClick={handleBroadcast}
                 disabled={broadcastSending || !broadcastMsg.trim()}
-                className={`w-full text-sm font-medium py-2 rounded-lg transition-colors ${
+                className={`w-full text-sm font-medium py-2 rounded-full h-10 transition-colors ${
                   broadcastSent
-                    ? 'bg-green-600 text-white'
-                    : 'bg-black text-white hover:bg-gray-800 disabled:opacity-40'
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100 disabled:opacity-40'
                 }`}>
                 {broadcastSent ? 'Sent!' : broadcastSending ? 'Sending...' : 'Send'}
               </button>
@@ -360,17 +341,17 @@ export function SettingsTab({
       {/* Members section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
+          className="text-xs font-medium uppercase tracking-widest px-2 text-gray-400 dark:text-gray-500">
 
           Group Members ({members.length})
         </h3>
         <div
-          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
 
           {members.map((member) =>
           <div
             key={member.id}
-            className={`flex items-center px-2 py-4 border-b last:border-0 ${divider}`}>
+            className="flex items-center px-2 py-4 border-b last:border-0 border-gray-100 dark:border-gray-800">
 
               <div
               className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mr-4"
@@ -381,20 +362,20 @@ export function SettingsTab({
                 {member.initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium truncate ${textPrimary}`}>
+                <p className="text-sm font-medium truncate text-black dark:text-white">
                   {member.name}
                 </p>
                 <div
-                className={`flex items-center space-x-2 text-[11px] mt-0.5 ${textMuted}`}>
+                className="flex items-center space-x-2 text-[11px] mt-0.5 text-gray-400 dark:text-gray-500">
 
                   <span className="flex items-center truncate">
-                    <MailIcon size={9} className="mr-1" />
+                    <MailIcon size={10} className="mr-1" />
                     {member.email}
                   </span>
                 </div>
               </div>
               <span
-              className={`text-sm font-semibold ml-2 flex-shrink-0 ${member.balance > 0 ? 'text-green-600' : member.balance < 0 ? 'text-red-500' : textPrimary}`}>
+              className={`text-sm font-semibold ml-2 flex-shrink-0 ${member.balance > 0 ? 'text-green-600' : member.balance < 0 ? 'text-red-500' : 'text-black dark:text-white'}`}>
 
                 {member.balance >= 0 ? '+' : ''}
                 {member.balance.toFixed(2)}
@@ -407,32 +388,32 @@ export function SettingsTab({
       {settingsGroups.map((group, groupIndex) =>
       <div key={groupIndex} className="space-y-2">
           <h3
-          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
+          className="text-xs font-medium uppercase tracking-widest px-2 text-gray-400 dark:text-gray-500">
 
             {group.title}
           </h3>
           <div
-          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className="rounded-2xl border overflow-hidden bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800">
 
             {group.items.map((item, itemIndex) =>
           <button
             key={itemIndex}
             onClick={item.onClick}
-            className={`w-full flex items-center justify-between p-4 transition-colors border-b last:border-0 ${divider} ${hoverBg}`}>
+            className="w-full flex items-center justify-between px-2 py-4 transition-colors border-b last:border-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800">
 
                 <div className="flex items-center space-x-3">
-                  <item.icon size={20} className={item.color || textPrimary} />
+                  <item.icon size={20} className={item.color || 'text-black dark:text-white'} />
                   <span
-                className={`text-base font-medium ${item.color || textPrimary}`}>
+                className={`text-sm font-medium ${item.color || 'text-black dark:text-white'}`}>
 
                     {item.label}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   {item.value &&
-              <span className={`text-sm ${textMuted}`}>{item.value}</span>
+              <span className="text-sm text-gray-400 dark:text-gray-500">{item.value}</span>
               }
-                  <ChevronRightIcon size={16} className={textMuted} />
+                  <ChevronRightIcon size={16} className="text-gray-400 dark:text-gray-500" />
                 </div>
               </button>
           )}
@@ -441,7 +422,7 @@ export function SettingsTab({
       )}
 
       <div className="text-center pt-8">
-        <p className={`text-xs ${textMuted}`}>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
           Version {__APP_VERSION__} • Built {__BUILD_DATE__}
         </p>
       </div>

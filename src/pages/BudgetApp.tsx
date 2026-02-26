@@ -446,11 +446,11 @@ export function BudgetApp() {
           {activeTab === 'calendar' && (
             <div className="flex-1 flex flex-col overflow-hidden">
               {/* Sub-tab switcher */}
-              <div className="flex justify-center pt-2 pb-4 px-4">
+              <div className="flex justify-center pt-6 pb-4 px-4">
                 <div className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-900 rounded-full p-1">
                   <button
                     onClick={() => setCalendarSubTab('availability')}
-                    className={`h-9 px-5 text-sm font-semibold rounded-full transition-all ${
+                    className={`h-10 px-5 text-sm font-semibold rounded-full transition-all ${
                       calendarSubTab === 'availability'
                         ? 'bg-black text-white dark:bg-white dark:text-black'
                         : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'
@@ -460,7 +460,7 @@ export function BudgetApp() {
                   </button>
                   <button
                     onClick={() => setCalendarSubTab('events')}
-                    className={`h-9 px-5 text-sm font-semibold rounded-full transition-all ${
+                    className={`h-10 px-5 text-sm font-semibold rounded-full transition-all ${
                       calendarSubTab === 'events'
                         ? 'bg-black text-white dark:bg-white dark:text-black'
                         : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'

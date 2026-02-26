@@ -26,7 +26,7 @@ export function MembersTab({ members }: MembersTabProps) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-medium text-black dark:text-white mb-0.5">
+              <h3 className="text-sm font-medium text-black dark:text-white mb-0.5">
                 {member.name}
               </h3>
               <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
@@ -39,12 +39,12 @@ export function MembersTab({ members }: MembersTabProps) {
 
             <div className="text-right">
               <span
-              className={`block text-base font-semibold ${member.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              className={`block text-sm font-semibold ${member.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
 
                 {member.balance >= 0 ? '+' : ''}
                 {member.balance.toFixed(2)}
               </span>
-              <span className="text-xs text-gray-400">Balance</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">Balance</span>
             </div>
           </div>
         )}

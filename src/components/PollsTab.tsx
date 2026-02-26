@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   PlusIcon,
   ChevronDownIcon,
-  InboxIcon,
   ChevronRightIcon,
   UsersIcon,
 } from 'lucide-react'
@@ -108,8 +107,8 @@ export function PollsTab({
   })
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 pb-24 pt-4 space-y-6">
-      <div className="flex justify-center pt-2 pb-2">
+    <div className="flex-1 overflow-y-auto px-4 pb-24 pt-6 space-y-6">
+      <div className="flex justify-center pb-2">
         <Button
           onClick={onCreatePoll}
           className="rounded-full h-10 px-6 bg-black dark:bg-white text-white dark:text-black"
@@ -120,8 +119,8 @@ export function PollsTab({
       </div>
 
       {/* Active Section */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest px-2">
+      <div className="space-y-2">
+        <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
           Active
         </h3>
 
@@ -133,14 +132,10 @@ export function PollsTab({
             animate={{
               opacity: 1,
             }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className="flex flex-col items-center justify-center py-12 space-y-4"
           >
-            <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <InboxIcon
-                size={22}
-                className="text-gray-400 dark:text-gray-500"
-              />
-            </div>
+            <span className="text-5xl">🗳️</span>
             <div className="text-center space-y-1">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 No active polls
@@ -169,12 +164,12 @@ export function PollsTab({
 
       {/* Archived Section */}
       {sortedArchived.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-2">
           <button
             onClick={() => setArchivedExpanded((v) => !v)}
-            className="flex items-center justify-between w-full px-2"
+            className="flex items-center justify-between w-full px-2 hover:opacity-70 transition-opacity"
           >
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+            <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Archived ({sortedArchived.length})
             </h3>
             <motion.div

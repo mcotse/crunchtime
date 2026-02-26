@@ -71,7 +71,7 @@ function SlotSection({
           <button
             type="button"
             onClick={onToggle}
-            className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${isAvailable ? 'bg-black dark:bg-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isAvailable ? 'bg-black dark:bg-white' : 'bg-gray-200 dark:bg-gray-600'}`}
             aria-label={`Toggle ${label} availability`}
           >
             <motion.span
@@ -81,12 +81,12 @@ function SlotSection({
                 stiffness: 500,
                 damping: 30,
               }}
-              className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-black shadow transition-transform ${isAvailable ? 'translate-x-6' : 'translate-x-1'}`}
+              className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-black shadow transition-transform ${isAvailable ? 'translate-x-6' : 'translate-x-1'}`}
             />
           </button>
         )}
         {isPastDate && (
-          <span className="text-xs text-gray-300 dark:text-gray-600 font-medium">
+          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
             Past
           </span>
         )}
@@ -200,7 +200,7 @@ export function DayDetailSheet({
               damping: 25,
               stiffness: 200,
             }}
-            className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-t-3xl z-50 max-h-[85vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-t-3xl z-[51] max-h-[85vh] flex flex-col"
           >
             {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -208,9 +208,9 @@ export function DayDetailSheet({
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-5 pt-2 pb-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between px-6 pt-2 pb-4 border-b border-gray-100 dark:border-gray-800">
               <div>
-                <h2 className="text-lg font-bold text-black dark:text-white">
+                <h2 className="text-lg font-semibold text-black dark:text-white">
                   {formatDateLabel(dateStr)}
                 </h2>
                 {past && (
@@ -221,19 +221,19 @@ export function DayDetailSheet({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-gray-400 dark:text-gray-500 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white transition-colors"
                 aria-label="Close"
               >
-                <XIcon size={20} />
+                <XIcon size={22} />
               </button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-3">
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
               {/* Your availability summary (if not past) */}
               {!past && (
-                <div className="bg-gray-50 dark:bg-gray-800/60 rounded-2xl px-4 py-3 mb-1">
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+                <div className="bg-gray-50 dark:bg-gray-800/60 rounded-2xl px-4 py-3">
+                  <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">
                     Your availability
                   </p>
                   <div className="flex gap-2">
@@ -292,7 +292,7 @@ export function DayDetailSheet({
               {!past && onCreateEvent && (
                 <button
                   onClick={() => onCreateEvent(dateStr)}
-                  className="w-full mt-2 py-3 text-sm font-semibold text-black dark:text-white bg-gray-100 dark:bg-gray-800 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+                  className="w-full mt-4 h-12 text-sm font-semibold text-black dark:text-white bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
                 >
                   🎉 Create Event
                 </button>

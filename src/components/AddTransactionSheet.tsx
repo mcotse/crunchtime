@@ -144,35 +144,34 @@ export function AddTransactionSheet({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{ x: '-50%' }}
-            className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[85vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-[51] h-[85vh] flex flex-col"
           >
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
-              <h2 className="text-xl font-bold dark:text-white">
+              <h2 className="text-xl font-semibold text-black dark:text-white">
                 {isEditMode ? 'Edit Transaction' : 'New Transaction'}
               </h2>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors dark:text-white"
               >
-                <XIcon size={24} />
+                <XIcon size={22} />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 pb-32">
-              <form id="transaction-form" onSubmit={handleSubmit} className="space-y-8 max-w-md mx-auto">
+              <form id="transaction-form" onSubmit={handleSubmit} className="space-y-7 max-w-md mx-auto">
                 <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
                   <button
                     type="button"
                     onClick={() => setType('income')}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${type === 'income' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+                    className={`flex-1 py-2 text-sm font-medium rounded-full transition-all ${type === 'income' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
                   >
                     Income
                   </button>
                   <button
                     type="button"
                     onClick={() => setType('expense')}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${type === 'expense' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+                    className={`flex-1 py-2 text-sm font-medium rounded-full transition-all ${type === 'expense' ? 'bg-white dark:bg-gray-600 shadow-sm text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
                   >
                     Expense
                   </button>
@@ -200,7 +199,7 @@ export function AddTransactionSheet({
                           if (showErrors) setShowErrors(false)
                         }}
                         placeholder="0.00"
-                        className={`w-full pl-16 pr-4 py-4 text-4xl font-bold border-b-2 outline-none transition-colors bg-transparent dark:text-white placeholder:text-gray-200 dark:placeholder:text-gray-700 ${showErrors && (!amount || parseFloat(amount) <= 0) ? 'border-red-400 focus:border-red-500' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                        className={`w-full pl-16 pr-4 py-4 text-4xl font-bold border-b-2 outline-none transition-colors bg-transparent dark:text-white placeholder:text-gray-200 dark:placeholder:text-gray-700 ${showErrors && (!amount || parseFloat(amount) <= 0) ? 'border-red-400 focus:border-red-500' : 'border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white'}`}
                         autoFocus
                         required
                       />
@@ -228,7 +227,7 @@ export function AddTransactionSheet({
                       type="date"
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl outline-none bg-transparent dark:text-white focus:border-black dark:focus:border-white transition-colors"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-800 rounded-xl outline-none bg-transparent dark:text-white focus:border-black dark:focus:border-white transition-colors"
                     />
                   </div>
 
@@ -241,7 +240,7 @@ export function AddTransactionSheet({
                       </label>
 
                       {selectedEvent ? (
-                        <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                        <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
                           <div className="flex items-center gap-3 px-4 py-3">
                             <span className="text-xl">{selectedEvent.emoji}</span>
                             <div className="flex-1 min-w-0">
@@ -282,13 +281,13 @@ export function AddTransactionSheet({
                             transition={{ duration: 0.2, ease: 'easeOut' }}
                             className="overflow-hidden mt-2"
                           >
-                            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden max-h-48 overflow-y-auto">
+                            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden max-h-48 overflow-y-auto">
                               {events.map(ev => (
                                 <button
                                   key={ev.id}
                                   type="button"
                                   onClick={() => handleSelectEvent(ev.id)}
-                                  className="w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+                                  className="w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
                                 >
                                   <span className="text-base">{ev.emoji}</span>
                                   <div className="flex-1 min-w-0">
@@ -310,7 +309,7 @@ export function AddTransactionSheet({
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Member
                     </label>
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
                       {[...members]
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map((member) => (
@@ -318,7 +317,7 @@ export function AddTransactionSheet({
                             key={member.id}
                             type="button"
                             onClick={() => setSelectedMember(member.id)}
-                            className={`w-full flex items-center px-4 py-3 transition-all border-b border-gray-100 dark:border-gray-700 last:border-0 ${selectedMember === member.id ? 'bg-black dark:bg-white text-white dark:text-black' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white'}`}
+                            className={`w-full flex items-center px-4 py-3 transition-all border-b border-gray-100 dark:border-gray-800 last:border-0 ${selectedMember === member.id ? 'bg-black dark:bg-white text-white dark:text-black' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white'}`}
                           >
                             <div
                               className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mr-3"
@@ -346,7 +345,7 @@ export function AddTransactionSheet({
                 type="button"
                 onClick={handleCTAClick}
                 aria-label="Submit transaction"
-                className="w-full h-14 text-lg bg-black dark:bg-white text-white dark:text-black rounded-xl"
+                className="w-full h-12 text-lg bg-black dark:bg-white text-white dark:text-black rounded-full"
               >
                 {isEditMode ? 'Update' : 'Add Transaction'}
               </Button>

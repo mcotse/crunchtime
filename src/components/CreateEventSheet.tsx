@@ -122,12 +122,11 @@ export function CreateEventSheet({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{ x: '-50%' }}
-            className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-[51] h-[90vh] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
-              <h2 className="text-xl font-bold dark:text-white">Create Event</h2>
+              <h2 className="text-xl font-semibold text-black dark:text-white">Create Event</h2>
               <button
                 onClick={handleClose}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors dark:text-white"
@@ -140,7 +139,7 @@ export function CreateEventSheet({
             <div className="flex-1 overflow-y-auto p-6 pb-32 space-y-7">
               {/* Emoji + Title */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest">
                   Event Name
                 </label>
                 <div className="flex items-start gap-3">
@@ -153,7 +152,7 @@ export function CreateEventSheet({
                       {emoji}
                     </button>
                     {showEmojiPicker && (
-                      <div className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 p-2 grid grid-cols-6 gap-1 z-10">
+                      <div className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 p-2 grid grid-cols-6 gap-1 z-10">
                         {EMOJI_PRESETS.map(e => (
                           <button
                             key={e}
@@ -171,7 +170,7 @@ export function CreateEventSheet({
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     placeholder="Give it a name..."
-                    className={`flex-1 text-base font-medium bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${showErrors && !title.trim() ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                    className={`flex-1 text-base font-medium bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 ${showErrors && !title.trim() ? 'border-red-400' : 'border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white'}`}
                     autoFocus
                   />
                 </div>
@@ -185,21 +184,21 @@ export function CreateEventSheet({
 
               {/* Date */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Date
                 </label>
                 <input
                   type="date"
                   value={date}
                   onChange={e => setDate(e.target.value)}
-                  className={`w-full text-sm bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white dark:color-scheme-dark ${showErrors && !date ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white'}`}
+                  className={`w-full text-sm bg-transparent outline-none border-b-2 pb-2 transition-colors dark:text-white dark:color-scheme-dark ${showErrors && !date ? 'border-red-400' : 'border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white'}`}
                 />
               </div>
 
               {/* Availability for selected date */}
               {date && hasAvailability && (
-                <div className="bg-gray-50 dark:bg-gray-800/60 rounded-2xl px-4 py-3.5 space-y-3">
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                <div className="bg-gray-50 dark:bg-gray-800/60 rounded-2xl px-4 py-3.5 space-y-3 border border-gray-100 dark:border-gray-800">
+                  <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                     Who's free on {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                   {morningMembers.length > 0 && (
@@ -265,50 +264,50 @@ export function CreateEventSheet({
 
               {/* Time */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Time
-                  <span className="ml-1.5 normal-case font-normal text-gray-300 dark:text-gray-600">(optional)</span>
+                  <span className="ml-1.5 normal-case font-normal text-gray-400 dark:text-gray-500">(optional)</span>
                 </label>
                 <input
                   type="time"
                   value={time}
                   onChange={e => setTime(e.target.value)}
-                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors dark:text-white dark:color-scheme-dark"
+                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors dark:text-white dark:color-scheme-dark"
                 />
-                <p className="text-[11px] text-gray-400">
+                <p className="text-[11px] text-gray-400 dark:text-gray-500">
                   Leave empty for all-day event.
                 </p>
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                   Description
-                  <span className="ml-1.5 normal-case font-normal text-gray-300 dark:text-gray-600">(optional)</span>
+                  <span className="ml-1.5 normal-case font-normal text-gray-400 dark:text-gray-500">(optional)</span>
                 </label>
                 <textarea
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Add details..."
                   rows={3}
-                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 resize-none"
+                  className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 resize-none"
                 />
               </div>
 
               {/* Link a poll */}
               {linkablePolls.length > 0 && (
                 <div className="space-y-2.5">
-                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest block">
+                  <label className="text-xs font-medium text-gray-400 uppercase tracking-widest block">
                     <LinkIcon size={10} className="inline mr-1 -mt-0.5" />
                     Link a Poll
-                    <span className="ml-1.5 normal-case font-normal text-gray-300 dark:text-gray-600">(optional)</span>
+                    <span className="ml-1.5 normal-case font-normal text-gray-400 dark:text-gray-500">(optional)</span>
                   </label>
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
                     {/* None option */}
                     <button
                       type="button"
                       onClick={() => setSelectedPollId(null)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 transition-colors text-left ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 transition-colors text-left ${
                         selectedPollId === null
                           ? 'bg-black dark:bg-white text-white dark:text-black'
                           : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400'
@@ -324,7 +323,7 @@ export function CreateEventSheet({
                         key={poll.id}
                         type="button"
                         onClick={() => setSelectedPollId(poll.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors text-left ${
+                        className={`w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0 transition-colors text-left ${
                           selectedPollId === poll.id
                             ? 'bg-black dark:bg-white text-white dark:text-black'
                             : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white'
@@ -348,7 +347,7 @@ export function CreateEventSheet({
                 type="button"
                 onClick={handleCreate}
                 disabled={showErrors && !isValid}
-                className="w-full h-14 text-base bg-black dark:bg-white text-white dark:text-black rounded-xl disabled:opacity-40"
+                className="w-full h-12 text-base bg-black dark:bg-white text-white dark:text-black rounded-full disabled:opacity-40"
               >
                 Create Event
               </Button>
@@ -370,9 +369,9 @@ export function CreateEventSheet({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="fixed inset-x-6 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl p-6 z-[61] shadow-2xl"
+                  className="fixed left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-sm top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl p-6 z-[61] shadow-2xl"
                 >
-                  <h3 className="text-base font-bold text-black dark:text-white mb-1">
+                  <h3 className="text-base font-semibold text-black dark:text-white mb-1">
                     Discard event?
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
@@ -382,13 +381,13 @@ export function CreateEventSheet({
                     <Button
                       onClick={() => setShowUnsavedWarning(false)}
                       variant="secondary"
-                      className="flex-1 rounded-xl"
+                      className="flex-1 rounded-full"
                     >
                       Keep editing
                     </Button>
                     <Button
                       onClick={resetAndClose}
-                      className="flex-1 rounded-xl bg-red-600 hover:bg-red-700 text-white"
+                      className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white"
                     >
                       Discard
                     </Button>
