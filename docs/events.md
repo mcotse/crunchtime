@@ -41,18 +41,18 @@ All under `/api/events`.
 | POST | `/` | Create event (auto-RSVPs creator as "going") |
 | POST | `/:id/rsvp` | Set RSVP: `{ status: 'going' \| 'maybe' \| 'cant_go' }` |
 | PATCH | `/:id` | Update event (creator only) |
+| GET | `/:id/ics` | Download ICS calendar file for the event |
 | PATCH | `/:id/archive` | Archive event (creator only) |
-| DELETE | `/:id` | Delete event (admin only) |
+
+### GET `/:id/ics` — ICS Calendar File
+
+Returns a `.ics` file (RFC 5545) for the event, suitable for importing into Google Calendar, Apple Calendar, Outlook, etc. Timed events use `DTSTART`/`DTEND` with UTC timestamps (1-hour default duration). All-day events use `VALUE=DATE`. The response has `Content-Type: text/calendar` and a `Content-Disposition` header for download.
 
 ### GET `/:id` enriched response
 Returns the event plus:
 - `linkedTransactions` — transactions where event_id matches
 - `linkedPoll` — poll where event_id matches (at most one)
 - `dateAvailability` — calendar availability for the event's date
-
-### DELETE `/:id` — Delete (admin only)
-
-Permanently removes the event. Linked transactions have their `event_id` set to NULL (unlinked, not deleted). Linked polls are also unlinked. RSVPs are cascade-deleted. Returns `403` if not admin, `404` if not found. Broadcasts `event_updated` SSE event.
 
 ### POST `/` body
 ```json
@@ -85,13 +85,13 @@ Compact card showing emoji, title, formatted date/time, RSVP summary with stacke
 Full-screen Partiful-style takeover (not a bottom sheet). Renders inside the max-w-md container with `absolute inset-0 z-50`:
 - Hero section with gradient background, large centered emoji (7xl) with spring animation, title, date/time with icons
 - 3 RSVP buttons in column layout with emoji labels (Going 🎉 / Maybe 🤔 / Can't Go 😢), selected state uses filled colors
+- "Add to Calendar (.ics)" download link below RSVP buttons — works with any calendar app
 - Attendee chips with backdrop-blur grouped by RSVP status
 - Description section
 - Expenses section with "Add Expense" button — tapping opens AddTransactionSheet pre-linked to the event. Shows total spend and individual transactions.
 - Linked poll section (tap to open PollDetailSheet)
 - Date availability section showing who's free morning/evening
 - Staggered entrance animations via framer-motion
-- Admin overflow menu (three-dot icon, top-right) with "Delete Event" option — opens confirmation modal
 
 ### CreateEventSheet
 Form with emoji picker (18 presets), title, date, time, description. Also shows:
