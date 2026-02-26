@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   LogOutIcon,
   ChevronRightIcon,
@@ -8,6 +8,8 @@ import {
   MoonIcon,
   BellIcon,
   SendIcon,
+  DownloadIcon,
+  ShareIcon,
   XIcon } from
 'lucide-react';
 import { Member } from '../data/mockData';
@@ -38,6 +40,41 @@ export function SettingsTab({
   const [broadcastSending, setBroadcastSending] = useState(false);
   const [broadcastSent, setBroadcastSent] = useState(false);
   const showPushToggle = isPushSupported();
+
+  // Install prompt
+  const deferredPromptRef = useRef<Event | null>(null);
+  const [canInstall, setCanInstall] = useState(false);
+  const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || (navigator as unknown as { standalone?: boolean }).standalone === true;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      deferredPromptRef.current = e;
+      setCanInstall(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (isIOS) {
+      setShowIOSGuide(true);
+      return;
+    }
+    const prompt = deferredPromptRef.current as (Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }) | null;
+    if (!prompt) return;
+    prompt.prompt();
+    const result = await prompt.userChoice;
+    if (result.outcome === 'accepted') {
+      setCanInstall(false);
+      deferredPromptRef.current = null;
+    }
+  };
+
+  const showInstallBanner = !isStandalone && (canInstall || isIOS);
 
   useEffect(() => {
     if (showPushToggle) {
@@ -110,6 +147,43 @@ export function SettingsTab({
           </button>
         )}
       </div>
+
+      {/* Install app banner */}
+      {showInstallBanner && (
+        <div className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          {showIOSGuide ? (
+            <div className="px-4 py-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className={`text-sm font-semibold ${textPrimary}`}>Add to Home Screen</span>
+                <button onClick={() => setShowIOSGuide(false)} className={`p-1 ${textMuted}`}>
+                  <XIcon size={16} />
+                </button>
+              </div>
+              <div className={`text-sm space-y-1.5 ${textMuted}`}>
+                <p>1. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button in Safari</p>
+                <p>2. Scroll down and tap <strong className={textPrimary}>Add to Home Screen</strong></p>
+                <p>3. Tap <strong className={textPrimary}>Add</strong></p>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleInstall}
+              className={`w-full flex items-center gap-3 px-4 py-4 transition-colors ${hoverBg}`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
+                <DownloadIcon size={18} className="text-white dark:text-black" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className={`text-sm font-semibold ${textPrimary}`}>Install Crunchtime</p>
+                <p className={`text-xs ${textMuted}`}>
+                  {isIOS ? 'Add to your home screen' : 'Install as an app on your device'}
+                </p>
+              </div>
+              <ChevronRightIcon size={16} className={textMuted} />
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Group name section */}
       <div className="space-y-2">
