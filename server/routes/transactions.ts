@@ -57,6 +57,19 @@ transactionsRouter.patch('/:id', async (c) => {
   return c.json(result)
 })
 
+transactionsRouter.delete('/:id', (c) => {
+  const member = c.get('member')
+  if (!member.is_admin) return c.json({ error: 'admin only' }, 403)
+
+  const id = c.req.param('id')
+  const existing = db.prepare('SELECT id FROM transactions WHERE id = ?').get(id)
+  if (!existing) return c.json({ error: 'transaction not found' }, 404)
+
+  db.prepare('DELETE FROM transactions WHERE id = ?').run(id)
+  broadcastSSE('transaction_added', { deleted: id })
+  return c.json({ ok: true })
+})
+
 transactionsRouter.post('/', async (c) => {
   const body = await c.req.json<{ amount: unknown; description: unknown; memberId: unknown; date: unknown; category: unknown; eventId?: unknown }>()
 
