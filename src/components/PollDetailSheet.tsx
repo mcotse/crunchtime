@@ -89,6 +89,7 @@ export function PollDetailSheet({
   const status = getPollStatus(poll)
   const isOpen_ = status === 'open'
   const totalVotes = poll.options.reduce((sum, o) => sum + o.voterIds.length, 0)
+  const uniqueParticipants = new Set(poll.options.flatMap((o) => o.voterIds)).size
 
   const myVotedOptionIds = poll.options
     .filter((o) => o.voterIds.includes(currentUserId))
@@ -309,7 +310,7 @@ export function PollDetailSheet({
                     </h3>
                     <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
                       <UsersIcon size={10} />
-                      {totalVotes} voted
+                      {uniqueParticipants} voted
                     </span>
                   </div>
 
@@ -352,8 +353,7 @@ export function PollDetailSheet({
                                 }}
                                 style={{ transformOrigin: 'left' }}
                               />
-                              <div className="relative flex flex-col gap-1.5">
-                                <div className="flex items-center gap-3">
+                              <div className="relative flex items-center gap-3">
                                   <div
                                     className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isVoted ? 'bg-black dark:bg-white border-black dark:border-white' : 'border-gray-300 dark:border-gray-600'}`}
                                   >
@@ -375,28 +375,20 @@ export function PollDetailSheet({
                                   <span className="text-xs font-semibold tabular-nums text-gray-500 dark:text-gray-400 flex-shrink-0">
                                     {pct}%
                                   </span>
-                                </div>
-                                {option.voterIds.length > 0 && (
-                                  <div className="pl-8 pt-1 space-y-2">
-                                    {option.voterIds.map((voterId) => {
-                                      const member = getMember(voterId)
-                                      if (!member) return null
-                                      return (
-                                        <div key={voterId} className="flex items-center gap-2.5">
-                                          <div
-                                            className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0"
-                                            style={{ backgroundColor: member.color }}
-                                          >
-                                            {member.initials}
-                                          </div>
-                                          <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                            {member.name}
-                                          </span>
-                                        </div>
-                                      )
-                                    })}
-                                  </div>
-                                )}
+
+                                  {option.voterIds.length > 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        setVoterSheetOption(option)
+                                      }}
+                                      className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0"
+                                    >
+                                      <UsersIcon size={11} />
+                                      <span className="text-xs font-semibold tabular-nums">{option.voterIds.length}</span>
+                                    </button>
+                                  )}
                               </div>
                             </div>
                           </button>

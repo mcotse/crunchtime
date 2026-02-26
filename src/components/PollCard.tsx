@@ -79,6 +79,7 @@ export function PollCard({
   const status = getPollStatus(poll)
   const isOpen = status === 'open'
   const totalVotes = poll.options.reduce((sum, o) => sum + o.voterIds.length, 0)
+  const uniqueParticipants = new Set(poll.options.flatMap((o) => o.voterIds)).size
   const maxVotes = Math.max(...poll.options.map((o) => o.voterIds.length), 1)
   const myVotedOptionIds = poll.options
     .filter((o) => o.voterIds.includes(currentUserId))
@@ -274,7 +275,7 @@ export function PollCard({
             </div>
           )}
           <span className="text-xs text-gray-400 dark:text-gray-500">
-            {totalVotes} voted
+            {uniqueParticipants} voted
           </span>
           {poll.comments.length > 0 && (
             <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">

@@ -4,7 +4,7 @@ import { SEED_POLLS, SEED_POLL_COMMENTS } from './seed-polls.ts'
 import { SEED_EVENTS } from './seed-events.ts'
 
 // Clear existing data (order matters due to FK constraints)
-db.exec('DELETE FROM event_rsvps; DELETE FROM calendar_availability; DELETE FROM poll_comments; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM transactions; DELETE FROM polls; DELETE FROM events; DELETE FROM members;')
+db.exec('DELETE FROM push_subscriptions; DELETE FROM event_rsvps; DELETE FROM calendar_availability; DELETE FROM poll_comments; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM transactions; DELETE FROM polls; DELETE FROM events; DELETE FROM members;')
 
 // Seed members (without balance — computed from transactions)
 const insertMember = db.prepare(`
@@ -118,5 +118,8 @@ for (const ev of SEED_EVENTS) {
 
 // Link some transactions to events (movie night expense)
 db.prepare('UPDATE transactions SET event_id = ? WHERE id = ?').run('ev6', 't4')
+
+// In local dev, first member is used for auth — make them admin
+db.prepare('UPDATE members SET is_admin = 1 WHERE id = ?').run(MEMBERS[0].id)
 
 console.log(`Seeded ${MEMBERS.length} members, ${TRANSACTIONS.length} transactions, ${SEED_POLLS.length} polls, ${calendarCount} calendar entries, ${SEED_EVENTS.length} events.`)
