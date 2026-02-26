@@ -427,6 +427,7 @@ export function BudgetApp() {
             groupName={groupName}
             onGroupNameChange={handleGroupNameChange}
             isDark={isDark}
+            isAdmin={isAdmin}
             onToggleDark={() => setIsDark(d => {
               localStorage.setItem('darkMode', String(!d));
               return !d;

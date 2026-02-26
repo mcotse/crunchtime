@@ -96,6 +96,16 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     edited_at  TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    member_id   TEXT NOT NULL REFERENCES members(id),
+    endpoint    TEXT NOT NULL,
+    keys_p256dh TEXT NOT NULL,
+    keys_auth   TEXT NOT NULL,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(member_id, endpoint)
+  );
 `)
 
 // Idempotent migrations: add event_id to transactions and polls

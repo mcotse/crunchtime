@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LogOutIcon,
   ChevronRightIcon,
@@ -6,15 +6,19 @@ import {
   PencilIcon,
   CheckIcon,
   MoonIcon,
+  BellIcon,
+  SendIcon,
   XIcon } from
 'lucide-react';
 import { Member } from '../data/mockData';
+import { subscribeToPush, unsubscribeFromPush, isPushSubscribed, isPushSupported } from '../lib/pushNotifications';
 interface SettingsTabProps {
   members: Member[];
   groupName: string;
   onGroupNameChange: (name: string) => void;
   isDark: boolean;
   onToggleDark: () => void;
+  isAdmin?: boolean;
   onClose?: () => void;
 }
 export function SettingsTab({
@@ -23,10 +27,52 @@ export function SettingsTab({
   onGroupNameChange,
   isDark,
   onToggleDark,
+  isAdmin,
   onClose
 }: SettingsTabProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(groupName);
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [broadcastMsg, setBroadcastMsg] = useState('');
+  const [broadcastSending, setBroadcastSending] = useState(false);
+  const [broadcastSent, setBroadcastSent] = useState(false);
+  const showPushToggle = isPushSupported();
+
+  useEffect(() => {
+    if (showPushToggle) {
+      isPushSubscribed().then(setPushEnabled);
+    }
+  }, [showPushToggle]);
+
+  const handleTogglePush = async () => {
+    setPushLoading(true);
+    if (pushEnabled) {
+      const ok = await unsubscribeFromPush();
+      if (ok) setPushEnabled(false);
+    } else {
+      const ok = await subscribeToPush();
+      if (ok) setPushEnabled(true);
+    }
+    setPushLoading(false);
+  };
+
+  const handleBroadcast = async () => {
+    if (!broadcastMsg.trim()) return;
+    setBroadcastSending(true);
+    try {
+      await fetch('/api/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: broadcastMsg.trim() }),
+      });
+      setBroadcastMsg('');
+      setBroadcastSent(true);
+      setTimeout(() => setBroadcastSent(false), 2000);
+    } finally {
+      setBroadcastSending(false);
+    }
+  };
   const handleSaveName = () => {
     const trimmed = nameInput.trim();
     if (trimmed) onGroupNameChange(trimmed);
@@ -148,6 +194,75 @@ export function SettingsTab({
           </div>
         </div>
       </div>
+
+      {/* Notifications */}
+      {showPushToggle && (
+        <div className="space-y-2">
+          <h3
+            className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+            Notifications
+          </h3>
+          <div
+            className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+            <div className="flex items-center justify-between px-4 py-4">
+              <div className="flex items-center space-x-3">
+                <BellIcon size={20} className={textPrimary} />
+                <span className={`text-base font-medium ${textPrimary}`}>
+                  Push Notifications
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleTogglePush}
+                disabled={pushLoading}
+                aria-label="Toggle push notifications"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${pushEnabled ? 'bg-black' : 'bg-gray-200'} ${pushLoading ? 'opacity-50' : ''}`}>
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${pushEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast (admin only) */}
+      {isAdmin && (
+        <div className="space-y-2">
+          <h3
+            className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+            Broadcast
+          </h3>
+          <div
+            className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+            <div className="px-4 py-4 space-y-3">
+              <div className="flex items-center space-x-3">
+                <SendIcon size={20} className={textPrimary} />
+                <span className={`text-base font-medium ${textPrimary}`}>
+                  Send Push to Everyone
+                </span>
+              </div>
+              <input
+                type="text"
+                value={broadcastMsg}
+                onChange={(e) => setBroadcastMsg(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleBroadcast(); }}
+                placeholder="Type a message..."
+                className={`w-full text-sm rounded-lg px-3 py-2 border outline-none ${cardBg} ${cardBorder} ${textPrimary}`}
+              />
+              <button
+                onClick={handleBroadcast}
+                disabled={broadcastSending || !broadcastMsg.trim()}
+                className={`w-full text-sm font-medium py-2 rounded-lg transition-colors ${
+                  broadcastSent
+                    ? 'bg-green-600 text-white'
+                    : 'bg-black text-white hover:bg-gray-800 disabled:opacity-40'
+                }`}>
+                {broadcastSent ? 'Sent!' : broadcastSending ? 'Sending...' : 'Send'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Members section */}
       <div className="space-y-2">

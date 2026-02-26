@@ -9,7 +9,28 @@
       "Bash(pkill:*)",
       "Bash(git push:*)",
       "Bash(gh api repos/mluo_ramp/crunchtime --jq '.full_name' 2>&1 || gh api repos/mluo-ramp/crunchtime --jq '.full_name' 2>&1)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(gh pr:*)",
+      "Bash(python3:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(lsof:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git:*)",
+      "Bash(kill 26872:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn add:*)",
+      "Bash(node:*)",
+      "Bash(rsvg-convert:*)",
+      "Bash(yarn info:*)",
+      "Bash(npx web-push:*)",
+      "Bash(VAPID_PUBLIC_KEY=\"BBEyCYQujQ-7URM7QV5ctbASkZm33UfoKc-h89r2E9eX30G3OeFWV86TgYH8fuUR-Af5AobfHDJjDeyPSDOE4uU\" VAPID_PRIVATE_KEY=\"-Ztt1PmmFzysdnj33lB0QpkwC480xup5r4bRA3uh3vo\" yarn dev:server:*)",
+      "Bash(yarn dev:client:*)",
+      "Bash(sqlite3:*)",
+      "Bash(VAPID_PRIVATE_KEY=\"hoCxStil4S2UEfZxFS0VIIxHh5lp6ouUJunQFtUvKmY\" yarn dev:server:*)",
+      "Bash(yarn dev:server:*)",
+      "Bash(GIT_EDITOR=true git rebase:*)"
     ]
   }
 }
