@@ -153,7 +153,7 @@ export function SettingsTab({
 
       {/* Install app banner */}
       {showInstallBanner && (
-        <div className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+        <div className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
           {showIOSGuide ? (
             <div className="px-4 py-4 space-y-2">
               <div className="flex items-center justify-between">
@@ -286,11 +286,11 @@ export function SettingsTab({
       {showPushToggle && (
         <div className="space-y-2">
           <h3
-            className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+            className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
             Notifications
           </h3>
           <div
-            className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+            className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
             <div className="flex items-center justify-between px-4 py-4">
               <div className="flex items-center space-x-3">
                 <BellIcon size={20} className={textPrimary} />
@@ -316,11 +316,11 @@ export function SettingsTab({
       {isAdmin && (
         <div className="space-y-2">
           <h3
-            className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+            className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
             Broadcast
           </h3>
           <div
-            className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+            className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
             <div className="px-4 py-4 space-y-3">
               <div className="flex items-center space-x-3">
                 <SendIcon size={20} className={textPrimary} />
