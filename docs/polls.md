@@ -78,6 +78,7 @@ All routes are mounted at `/api/polls`.
 | POST | `/:id/options` | Add a new option |
 | PATCH | `/:id/archive` | Archive a poll (creator only) |
 | PATCH | `/:id/unarchive` | Unarchive a poll (creator only) |
+| DELETE | `/:id` | Delete a poll (admin only) |
 
 ### POST `/` — Create
 
@@ -114,6 +115,10 @@ Replaces the current user's previous votes atomically. Validates multi-select ru
 
 Only works if `allowMembersToAddOptions` is true and the poll hasn't expired.
 
+### DELETE `/:id` — Delete (admin only)
+
+Permanently removes the poll and all its options and votes (via ON DELETE CASCADE). Returns `403` if the authenticated user is not an admin, `404` if the poll does not exist. Broadcasts a `poll_updated` SSE event on success.
+
 ---
 
 ## Real-Time Updates
@@ -128,7 +133,7 @@ All mutations broadcast a `poll_updated` SSE event (via `GET /api/events`) with 
 |-----------|------|------|
 | PollsTab | `src/components/PollsTab.tsx` | Main tab view — active polls (newest first) + collapsible archived section |
 | PollCard | `src/components/PollCard.tsx` | Inline-votable card with progress bars, emoji, stacked voter avatars |
-| PollDetailSheet | `src/components/PollDetailSheet.tsx` | Bottom sheet with full voter names, winner banner, add-option input, archive controls |
+| PollDetailSheet | `src/components/PollDetailSheet.tsx` | Bottom sheet with full voter names, winner banner, add-option input, archive controls, admin delete |
 | CreatePollSheet | `src/components/CreatePollSheet.tsx` | Bottom sheet form — emoji picker, question, dynamic options, multi-select toggle, expiration date (default: +7 days) |
 
 ### UI Behavior

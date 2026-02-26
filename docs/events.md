@@ -42,12 +42,17 @@ All under `/api/events`.
 | POST | `/:id/rsvp` | Set RSVP: `{ status: 'going' \| 'maybe' \| 'cant_go' }` |
 | PATCH | `/:id` | Update event (creator only) |
 | PATCH | `/:id/archive` | Archive event (creator only) |
+| DELETE | `/:id` | Delete event (admin only) |
 
 ### GET `/:id` enriched response
 Returns the event plus:
 - `linkedTransactions` — transactions where event_id matches
 - `linkedPoll` — poll where event_id matches (at most one)
 - `dateAvailability` — calendar availability for the event's date
+
+### DELETE `/:id` — Delete (admin only)
+
+Permanently removes the event. Linked transactions have their `event_id` set to NULL (unlinked, not deleted). Linked polls are also unlinked. RSVPs are cascade-deleted. Returns `403` if not admin, `404` if not found. Broadcasts `event_updated` SSE event.
 
 ### POST `/` body
 ```json
@@ -86,6 +91,7 @@ Full-screen Partiful-style takeover (not a bottom sheet). Renders inside the max
 - Linked poll section (tap to open PollDetailSheet)
 - Date availability section showing who's free morning/evening
 - Staggered entrance animations via framer-motion
+- Admin overflow menu (three-dot icon, top-right) with "Delete Event" option — opens confirmation modal
 
 ### CreateEventSheet
 Form with emoji picker (18 presets), title, date, time, description. Also shows:

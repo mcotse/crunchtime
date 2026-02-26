@@ -2,7 +2,7 @@ import { createMiddleware } from 'hono/factory'
 import { createRemoteJWKSet, jwtVerify } from 'jose'
 import db from '../db.js'
 
-type Member = { id: string; name: string; initials: string; phone: string; email: string; color: string }
+type Member = { id: string; name: string; initials: string; phone: string; email: string; color: string; is_admin: number }
 
 const TEAM_DOMAIN = process.env.CF_TEAM_DOMAIN ?? ''
 
@@ -25,7 +25,7 @@ export const authMiddleware = createMiddleware<{ Variables: Variables }>(async (
   // In development (no CF_TEAM_DOMAIN set), skip auth and use first member
   if (!TEAM_DOMAIN) {
     const member = db.prepare(`
-      SELECT m.id, m.name, m.initials, m.phone, m.email, m.color,
+      SELECT m.id, m.name, m.initials, m.phone, m.email, m.color, m.is_admin,
              COALESCE((SELECT SUM(t.amount) FROM transactions t WHERE t.member_id = m.id), 0) AS balance
       FROM members m LIMIT 1
     `).get() as (Member & { balance: number }) | undefined
@@ -44,7 +44,7 @@ export const authMiddleware = createMiddleware<{ Variables: Variables }>(async (
   }
 
   const member = db.prepare(`
-    SELECT m.id, m.name, m.initials, m.phone, m.email, m.color,
+    SELECT m.id, m.name, m.initials, m.phone, m.email, m.color, m.is_admin,
            COALESCE((SELECT SUM(t.amount) FROM transactions t WHERE t.member_id = m.id), 0) AS balance
     FROM members m WHERE m.email = ?
   `).get(email) as (Member & { balance: number }) | undefined

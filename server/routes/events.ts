@@ -198,6 +198,25 @@ eventsRouter.patch('/:id', async (c) => {
   return c.json(event)
 })
 
+// DELETE /api/events/:id — delete event (admin only)
+eventsRouter.delete('/:id', (c) => {
+  const member = c.get('member')
+  if (!member.is_admin) return c.json({ error: 'admin only' }, 403)
+
+  const eventId = c.req.param('id')
+  const row = db.prepare('SELECT id FROM events WHERE id = ?').get(eventId)
+  if (!row) return c.json({ error: 'event not found' }, 404)
+
+  // Unlink transactions that reference this event
+  db.prepare('UPDATE transactions SET event_id = NULL WHERE event_id = ?').run(eventId)
+  // Unlink polls that reference this event
+  db.prepare('UPDATE polls SET event_id = NULL WHERE event_id = ?').run(eventId)
+  // ON DELETE CASCADE handles event_rsvps
+  db.prepare('DELETE FROM events WHERE id = ?').run(eventId)
+  broadcastSSE('event_updated', { deleted: eventId })
+  return c.json({ ok: true })
+})
+
 // PATCH /api/events/:id/archive — archive event (creator only)
 eventsRouter.patch('/:id/archive', (c) => {
   const eventId = c.req.param('id')
