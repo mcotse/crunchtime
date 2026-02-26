@@ -92,7 +92,7 @@ export function CalendarTab({
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <div className="flex flex-col pb-24 px-4">
+    <div className="flex-1 flex flex-col px-4 pb-24">
       {/* Month navigation */}
       <div className="flex items-center justify-between pt-4 pb-4">
         <button

@@ -33,7 +33,7 @@ export function HomeTab({
     currency: 'USD'
   }).format(Math.abs(balance));
   return (
-    <div className="flex-1 flex items-center justify-center px-6 pb-20 pt-4">
+    <div className="flex-1 flex items-center justify-center px-4 pb-24 pt-4">
       <motion.div
         initial={{
           opacity: 0,

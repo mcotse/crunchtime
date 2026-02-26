@@ -36,7 +36,7 @@ describe('Tab styling consistency', () => {
       expect(root.className).toContain('pt-4')
     })
 
-    it('EventsTab CTA area has pt-4 (top spacing from calendar sub-tab toggle)', async () => {
+    it('EventsTab container has pt-4', async () => {
       const { EventsTab } = await import('../EventsTab')
       const { container } = render(
         <EventsTab
@@ -47,8 +47,8 @@ describe('Tab styling consistency', () => {
           onOpenEvent={() => {}}
         />,
       )
-      const ctaWrapper = container.querySelector('[class*="justify-center"]')
-      expect(ctaWrapper?.className).toContain('pt-4')
+      const root = container.firstElementChild as HTMLElement
+      expect(root.className).toContain('pt-4')
     })
   })
 

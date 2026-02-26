@@ -138,7 +138,7 @@ export function SettingsTab({
   }];
 
   return (
-    <div className={`flex-1 overflow-y-auto px-4 pb-24 space-y-8 pt-4 ${bg}`}>
+    <div className={`flex-1 overflow-y-auto px-4 pb-24 space-y-6 pt-4 ${bg}`}>
       <div className="flex items-center justify-between px-2">
         <h2 className={`text-lg font-semibold ${textPrimary}`}>Settings</h2>
         {onClose && (
@@ -155,7 +155,7 @@ export function SettingsTab({
       {showInstallBanner && (
         <div className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
           {showIOSGuide ? (
-            <div className="px-4 py-4 space-y-2">
+            <div className="px-2 py-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className={`text-sm font-semibold ${textPrimary}`}>Add to Home Screen</span>
                 <button onClick={() => setShowIOSGuide(false)} className={`p-1 ${textMuted}`}>
@@ -181,7 +181,7 @@ export function SettingsTab({
           ) : (
             <button
               onClick={handleInstall}
-              className={`w-full flex items-center gap-3 px-4 py-4 transition-colors ${hoverBg}`}
+              className={`w-full flex items-center gap-3 px-2 py-4 transition-colors ${hoverBg}`}
             >
               <div className="w-10 h-10 rounded-xl bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
                 <DownloadIcon size={18} className="text-white dark:text-black" />
@@ -201,14 +201,14 @@ export function SettingsTab({
       {/* Group name section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
 
           Group
         </h3>
         <div
           className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
-          <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center justify-between px-2 py-4">
             <span className={`text-sm font-medium ${textMuted}`}>Name</span>
             {isEditingName ?
             <div className="flex items-center space-x-2 flex-1 ml-4">
@@ -254,14 +254,14 @@ export function SettingsTab({
       {/* Appearance */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
 
           Appearance
         </h3>
         <div
           className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
-          <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center justify-between px-2 py-4">
             <div className="flex items-center space-x-3">
               <MoonIcon size={20} className={textPrimary} />
               <span className={`text-base font-medium ${textPrimary}`}>
@@ -286,12 +286,12 @@ export function SettingsTab({
       {showPushToggle && (
         <div className="space-y-2">
           <h3
-            className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+            className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
             Notifications
           </h3>
           <div
             className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
-            <div className="flex items-center justify-between px-4 py-4">
+            <div className="flex items-center justify-between px-2 py-4">
               <div className="flex items-center space-x-3">
                 <BellIcon size={20} className={textPrimary} />
                 <span className={`text-base font-medium ${textPrimary}`}>
@@ -316,12 +316,12 @@ export function SettingsTab({
       {isAdmin && (
         <div className="space-y-2">
           <h3
-            className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+            className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
             Broadcast
           </h3>
           <div
             className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
-            <div className="px-4 py-4 space-y-3">
+            <div className="px-2 py-4 space-y-3">
               <div className="flex items-center space-x-3">
                 <SendIcon size={20} className={textPrimary} />
                 <span className={`text-base font-medium ${textPrimary}`}>
@@ -354,7 +354,7 @@ export function SettingsTab({
       {/* Members section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
 
           Group Members ({members.length})
         </h3>
@@ -364,7 +364,7 @@ export function SettingsTab({
           {members.map((member) =>
           <div
             key={member.id}
-            className={`flex items-center px-4 py-4 border-b last:border-0 ${divider}`}>
+            className={`flex items-center px-2 py-4 border-b last:border-0 ${divider}`}>
 
               <div
               className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mr-4"
@@ -401,7 +401,7 @@ export function SettingsTab({
       {settingsGroups.map((group, groupIndex) =>
       <div key={groupIndex} className="space-y-2">
           <h3
-          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
+          className={`text-xs font-medium uppercase tracking-widest px-2 ${textMuted}`}>
 
             {group.title}
           </h3>

@@ -6,7 +6,7 @@ interface MembersTabProps {
 }
 export function MembersTab({ members }: MembersTabProps) {
   return (
-    <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-6">
+    <div className="flex-1 overflow-y-auto px-4 pb-24 pt-4 space-y-6">
       <h2 className="text-lg font-semibold text-black dark:text-white px-2">
         Group Members ({members.length})
       </h2>
@@ -17,7 +17,7 @@ export function MembersTab({ members }: MembersTabProps) {
           className="flex items-center py-4 px-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
 
             <div
-            className="h-12 w-12 rounded-full flex items-center justify-center text-white text-base font-medium flex-shrink-0 mr-4"
+            className="h-10 w-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 mr-4"
             style={{
               backgroundColor: member.color
             }}>
