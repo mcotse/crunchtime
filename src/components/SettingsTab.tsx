@@ -47,7 +47,8 @@ export function SettingsTab({
   const [showIOSGuide, setShowIOSGuide] = useState(false);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     || (navigator as unknown as { standalone?: boolean }).standalone === true;
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -58,6 +59,8 @@ export function SettingsTab({
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
+
+  const isIOSChrome = isIOS && /CriOS/.test(navigator.userAgent);
 
   const handleInstall = async () => {
     if (isIOS) {
@@ -74,7 +77,7 @@ export function SettingsTab({
     }
   };
 
-  const showInstallBanner = !isStandalone && (canInstall || isIOS);
+  const showInstallBanner = !isStandalone;
 
   useEffect(() => {
     if (showPushToggle) {
@@ -160,9 +163,19 @@ export function SettingsTab({
                 </button>
               </div>
               <div className={`text-sm space-y-1.5 ${textMuted}`}>
-                <p>1. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button in Safari</p>
-                <p>2. Scroll down and tap <strong className={textPrimary}>Add to Home Screen</strong></p>
-                <p>3. Tap <strong className={textPrimary}>Add</strong></p>
+                {isIOSChrome ? (
+                  <>
+                    <p>1. Open this page in <strong className={textPrimary}>Safari</strong></p>
+                    <p>2. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button</p>
+                    <p>3. Tap <strong className={textPrimary}>Add to Home Screen</strong></p>
+                  </>
+                ) : (
+                  <>
+                    <p>1. Tap the <ShareIcon size={13} className="inline -mt-0.5" /> Share button</p>
+                    <p>2. Scroll down and tap <strong className={textPrimary}>Add to Home Screen</strong></p>
+                    <p>3. Tap <strong className={textPrimary}>Add</strong></p>
+                  </>
+                )}
               </div>
             </div>
           ) : (
