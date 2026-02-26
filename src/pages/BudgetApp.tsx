@@ -444,9 +444,9 @@ export function BudgetApp() {
             onVote={handleVote} />
           }
           {activeTab === 'calendar' && (
-            <div className="flex-1 flex flex-col justify-center overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-hidden">
               {/* Sub-tab switcher */}
-              <div className="flex justify-center pb-4 px-4">
+              <div className="flex justify-center pt-2 pb-4 px-4">
                 <div className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-900 rounded-full p-1">
                   <button
                     onClick={() => setCalendarSubTab('availability')}
