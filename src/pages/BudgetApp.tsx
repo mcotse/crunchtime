@@ -398,7 +398,7 @@ export function BudgetApp() {
 
   return (
     <div
-      className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
+      className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 pt-safe-top ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
 
       <div className="max-w-md mx-auto h-full relative flex flex-col">
         {activeTab !== 'home' && activeTab !== 'polls' && activeTab !== 'calendar' && activeTab !== 'settings' &&
