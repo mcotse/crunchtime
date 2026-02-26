@@ -54,8 +54,7 @@ export function BudgetApp() {
   const [isEventDetailOpen, setIsEventDetailOpen] = useState(false)
   const [createEventPrefillDate, setCreateEventPrefillDate] = useState<string | null>(null)
   const [transactionPrefillEventId, setTransactionPrefillEventId] = useState<string | null>(null)
-
-  const CURRENT_USER_ID = 'm1';
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
   useEffect(() => {
     document.body.style.backgroundColor = isDark ? '#030712' : '#ffffff';
@@ -70,21 +69,24 @@ export function BudgetApp() {
   // Fetch all initial data on mount
   useEffect(() => {
     Promise.all([
+      fetch('/api/me').then(r => r.ok ? r.json() : null),
       fetch('/api/members').then(r => r.ok ? r.json() : []),
       fetch('/api/transactions').then(r => r.ok ? r.json() : []),
       fetch('/api/settings').then(r => r.ok ? r.json() : null),
       fetchPolls(),
       fetchCalendar(),
       fetchEvents(),
-      fetch('/api/me').then(r => r.ok ? r.json() : null),
-    ]).then(([membersData, txData, settingsData, pollsData, calendarData, eventsData, meData]) => {
+    ]).then(([meData, membersData, txData, settingsData, pollsData, calendarData, eventsData]) => {
+      if (meData) {
+        setCurrentUserId(meData.id);
+        setIsAdmin(!!meData.is_admin);
+      }
       setMembers(membersData);
       setTransactions(txData);
       if (settingsData) setGroupName(settingsData.groupName);
       setPolls(pollsData);
       setCalendarAvailability(calendarData);
       setEvents(eventsData);
-      if (meData) setIsAdmin(!!meData.is_admin);
     });
   }, []);
 
@@ -236,18 +238,19 @@ export function BudgetApp() {
     dateStr: string,
     slot: 'morning' | 'evening',
   ) => {
+    if (!currentUserId) return
     // Optimistic update
     setCalendarAvailability((prev) => {
       const existing = prev[dateStr] ?? { morning: [], evening: [] }
       const slotArr = existing[slot]
-      const isIn = slotArr.includes(CURRENT_USER_ID)
+      const isIn = slotArr.includes(currentUserId)
       return {
         ...prev,
         [dateStr]: {
           ...existing,
           [slot]: isIn
-            ? slotArr.filter((id) => id !== CURRENT_USER_ID)
-            : [...slotArr, CURRENT_USER_ID],
+            ? slotArr.filter((id) => id !== currentUserId)
+            : [...slotArr, currentUserId],
         },
       }
     })
@@ -395,7 +398,7 @@ export function BudgetApp() {
           <PollsTab
             polls={polls}
             members={members}
-            currentUserId={CURRENT_USER_ID}
+            currentUserId={currentUserId ?? ''}
             onCreatePoll={() => setIsCreatePollOpen(true)}
             onOpenPoll={handleOpenPoll}
             onVote={handleVote} />
@@ -429,7 +432,7 @@ export function BudgetApp() {
                 <CalendarTab
                   availability={calendarAvailability}
                   members={members}
-                  currentUserId={CURRENT_USER_ID}
+                  currentUserId={currentUserId ?? ''}
                   onDayTap={handleDayTap}
                   events={events}
                 />
@@ -437,7 +440,7 @@ export function BudgetApp() {
                 <EventsTab
                   events={events}
                   members={members}
-                  currentUserId={CURRENT_USER_ID}
+                  currentUserId={currentUserId ?? ''}
                   onCreateEvent={() => { setCreateEventPrefillDate(null); setIsCreateEventOpen(true) }}
                   onOpenEvent={handleOpenEvent}
                 />
@@ -461,13 +464,13 @@ export function BudgetApp() {
         <CreatePollSheet
           isOpen={isCreatePollOpen}
           onClose={() => setIsCreatePollOpen(false)}
-          currentUserId={CURRENT_USER_ID}
+          currentUserId={currentUserId ?? ''}
           onCreatePoll={handleCreatePoll} />
 
         <PollDetailSheet
           poll={selectedPoll}
           members={members}
-          currentUserId={CURRENT_USER_ID}
+          currentUserId={currentUserId ?? ''}
           isOpen={isPollDetailOpen}
           onClose={() => setIsPollDetailOpen(false)}
           onVote={handleVote}
@@ -483,14 +486,14 @@ export function BudgetApp() {
           onClose={() => setIsDayDetailOpen(false)}
           availability={calendarAvailability}
           members={members}
-          currentUserId={CURRENT_USER_ID}
+          currentUserId={currentUserId ?? ''}
           onToggle={handleToggleAvailability}
           onCreateEvent={handleCreateEventFromDay} />
 
         <EventDetailSheet
           event={selectedEvent}
           members={members}
-          currentUserId={CURRENT_USER_ID}
+          currentUserId={currentUserId ?? ''}
           isOpen={isEventDetailOpen}
           onClose={() => setIsEventDetailOpen(false)}
           onRsvp={handleRsvp}
