@@ -167,26 +167,25 @@ export function PollDetailSheet({
               damping: 25,
               stiffness: 200,
             }}
-            style={{ x: '-50%' }}
-            className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-50 h-[92vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto bg-white dark:bg-gray-900 rounded-t-3xl z-[51] h-[92vh] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-start justify-between p-6 pb-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
               <div className="flex-1 pr-3 space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   {isOpen_ ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-100 dark:border-emerald-800">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold border border-emerald-100 dark:border-emerald-800">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
                       Open
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[11px] font-semibold border border-gray-200 dark:border-gray-700">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-semibold border border-gray-200 dark:border-gray-800">
                       <LockIcon size={9} />
                       Closed
                     </span>
                   )}
                   {poll.isArchived && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[11px] font-semibold border border-amber-100 dark:border-amber-800">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-xs font-semibold border border-amber-100 dark:border-amber-800">
                       <ArchiveIcon size={9} />
                       Archived
                     </span>
@@ -198,7 +197,7 @@ export function PollDetailSheet({
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg font-bold text-black dark:text-white leading-snug">
+                <h2 className="text-lg font-semibold text-black dark:text-white leading-snug">
                   <span className="mr-1.5">{poll.emoji}</span>
                   {poll.title}
                 </h2>
@@ -224,7 +223,7 @@ export function PollDetailSheet({
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -4 }}
                           transition={{ duration: 0.12 }}
-                          className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-w-[160px] z-10"
+                          className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden min-w-[160px] z-10"
                         >
                           {canArchive && (poll.isArchived ? (
                             <button
@@ -290,10 +289,10 @@ export function PollDetailSheet({
                   >
                     <span className="text-lg">{'\u{1F3C6}'}</span>
                     <div>
-                      <p className="text-xs font-semibold text-white dark:text-black uppercase tracking-wider">
+                      <p className="text-xs font-medium text-white dark:text-black uppercase tracking-widest">
                         {isTie ? 'Tie' : 'Winner'}
                       </p>
-                      <p className="text-sm font-bold text-white dark:text-black">
+                      <p className="text-sm font-semibold text-white dark:text-black">
                         {winners.map((w) => w.text).join(', ')}
                       </p>
                     </div>
@@ -301,9 +300,9 @@ export function PollDetailSheet({
                 )}
 
                 {/* Voting module */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+                    <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
                       {poll.allowMultiSelect
                         ? 'Select all that apply'
                         : 'Choose one'}
@@ -406,7 +405,7 @@ export function PollDetailSheet({
                       onChange={(e) => setNewOptionText(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleAddOption()}
                       placeholder="+ Add an option..."
-                      className="flex-1 text-sm bg-transparent outline-none border-b border-dashed border-gray-200 dark:border-gray-700 pb-1.5 text-black dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:border-black dark:focus:border-white transition-colors"
+                      className="flex-1 text-sm bg-transparent outline-none border-b border-dashed border-gray-200 dark:border-gray-800 pb-1.5 text-black dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:border-black dark:focus:border-white transition-colors"
                     />
                     {newOptionText.trim() && (
                       <button
@@ -420,10 +419,10 @@ export function PollDetailSheet({
                 )}
 
                 {/* Comments section */}
-                <div className="space-y-3 pt-2">
+                <div className="space-y-4 pt-2">
                   <div className="flex items-center gap-1.5">
                     <MessageCircleIcon size={12} className="text-gray-400" />
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+                    <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
                       Comments{poll.comments.length > 0 ? ` (${poll.comments.length})` : ''}
                     </h3>
                   </div>
@@ -466,7 +465,7 @@ export function PollDetailSheet({
                                       if (e.key === 'Escape') { setEditingCommentId(null); setEditingCommentText('') }
                                     }}
                                     autoFocus
-                                    className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-lg px-2.5 py-1.5 outline-none text-black dark:text-white border border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors"
+                                    className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-xl px-2.5 py-1.5 outline-none text-black dark:text-white border border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors"
                                   />
                                   <button
                                     onClick={() => handleSaveEdit(comment.id)}
@@ -482,7 +481,7 @@ export function PollDetailSheet({
                                   </button>
                                 </div>
                               ) : (
-                                <p className="text-sm text-gray-700 dark:text-gray-300 mt-0.5 leading-relaxed">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5 leading-relaxed">
                                   {comment.text}
                                 </p>
                               )}
@@ -518,7 +517,7 @@ export function PollDetailSheet({
                       onChange={(e) => setCommentText(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSubmitComment()}
                       placeholder="Add a comment..."
-                      className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-full px-4 py-2 outline-none text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors"
+                      className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-full px-4 py-2 outline-none text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border border-gray-200 dark:border-gray-800 focus:border-black dark:focus:border-white transition-colors"
                     />
                     {commentText.trim() && (
                       <button
@@ -540,7 +539,7 @@ export function PollDetailSheet({
               <>
                 <motion.div
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.4 }}
+                  animate={{ opacity: 0.3 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setVoterSheetOption(null)}
                   className="fixed inset-0 bg-black z-[60]"
@@ -551,15 +550,14 @@ export function PollDetailSheet({
                   exit={{ y: '100%' }}
                   transition={{
                     type: 'spring',
-                    damping: 28,
-                    stiffness: 220,
+                    damping: 25,
+                    stiffness: 200,
                   }}
-                  style={{ x: '-50%' }}
-                  className="fixed bottom-0 left-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl z-[61] max-h-[60vh] flex flex-col"
+                  className="fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto bg-white dark:bg-gray-900 rounded-t-3xl z-[61] max-h-[60vh] flex flex-col"
                 >
                   <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
                     <div>
-                      <h3 className="text-base font-bold text-black dark:text-white">
+                      <h3 className="text-base font-semibold text-black dark:text-white">
                         {voterSheetOption.text}
                       </h3>
                       <p className="text-xs text-gray-400 mt-0.5">
@@ -590,7 +588,7 @@ export function PollDetailSheet({
                               className="flex items-center gap-3 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0"
                             >
                               <div
-                                className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0"
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0"
                                 style={{
                                   backgroundColor: member.color,
                                 }}

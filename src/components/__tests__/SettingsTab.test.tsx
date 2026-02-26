@@ -120,4 +120,72 @@ describe('SettingsTab', () => {
     expect(screen.getByText('alice@example.com')).toBeInTheDocument()
     expect(screen.getByText('bob@example.com')).toBeInTheDocument()
   })
+
+  describe('cohesive grouping', () => {
+    it('shows Preferences heading instead of separate Appearance and Notifications headings', () => {
+      render(<SettingsTab {...defaultProps} />)
+      // Should have a "Preferences" section header instead of separate headings
+      expect(screen.getByText('Preferences')).toBeInTheDocument()
+      expect(screen.queryByText('Appearance')).not.toBeInTheDocument()
+      expect(screen.queryByText('Notifications')).not.toBeInTheDocument()
+      // Dark Mode should still be visible
+      expect(screen.getByText('Dark Mode')).toBeInTheDocument()
+    })
+
+    it('broadcast input uses rounded-2xl to match card system', () => {
+      render(<SettingsTab {...defaultProps} isAdmin={true} />)
+      const input = screen.getByPlaceholderText('Type a message...')
+      expect(input.className).toContain('rounded-2xl')
+      expect(input.className).not.toContain('rounded-xl')
+    })
+
+    it('broadcast send button supports dark mode colors', () => {
+      render(<SettingsTab {...defaultProps} isAdmin={true} />)
+      const sendBtn = screen.getByRole('button', { name: /send/i })
+      expect(sendBtn.className).toContain('dark:bg-white')
+      expect(sendBtn.className).toContain('dark:text-black')
+    })
+  })
+
+  describe('design system unification', () => {
+    it('does not use JS-computed color variables in rendered output (uses Tailwind dark: classes)', () => {
+      const { container } = render(<SettingsTab {...defaultProps} />)
+      const html = container.innerHTML
+      // The component should use Tailwind dark: classes, not JS-computed classes
+      // Check that proper Tailwind dark: utilities are present
+      expect(html).toContain('dark:text-white')
+      expect(html).toContain('dark:bg-gray-900')
+      expect(html).toContain('dark:border-gray-800')
+    })
+
+    it('uses text-sm for setting row labels instead of text-base', () => {
+      const { container } = render(<SettingsTab {...defaultProps} />)
+      // Dark Mode label
+      const darkModeLabel = screen.getByText('Dark Mode')
+      expect(darkModeLabel.className).toContain('text-sm')
+      expect(darkModeLabel.className).not.toContain('text-base')
+    })
+
+    it('dark mode toggle track uses bg-white when active in dark mode', () => {
+      const { container } = render(<SettingsTab {...defaultProps} isDark={true} />)
+      const toggleBtn = screen.getByRole('button', { name: /toggle dark mode/i })
+      expect(toggleBtn.className).toContain('bg-white')
+      expect(toggleBtn.className).not.toContain('bg-black')
+    })
+
+    it('uses Tailwind dark: classes for background instead of JS variables', () => {
+      const { container } = render(<SettingsTab {...defaultProps} />)
+      // The outer container should use dark: variant classes
+      const outerDiv = container.firstElementChild as HTMLElement
+      expect(outerDiv.className).toContain('bg-white')
+      expect(outerDiv.className).toContain('dark:bg-gray-950')
+    })
+
+    it('setting row labels use text-sm for "Log Out"', () => {
+      const { container } = render(<SettingsTab {...defaultProps} />)
+      const logOutLabel = screen.getByText('Log Out')
+      expect(logOutLabel.className).toContain('text-sm')
+      expect(logOutLabel.className).not.toContain('text-base')
+    })
+  })
 })

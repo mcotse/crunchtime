@@ -92,12 +92,12 @@ export function CalendarTab({
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <div className="flex-1 flex flex-col px-4 pb-24">
+    <div className="flex-1 flex flex-col px-4 pb-24 pt-4">
       {/* Month navigation */}
-      <div className="flex items-center justify-between pt-4 pb-4">
+      <div className="flex items-center justify-between pb-4">
         <button
           onClick={handlePrevMonth}
-          className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
           aria-label="Previous month"
         >
           <ChevronLeftIcon size={20} />
@@ -106,22 +106,22 @@ export function CalendarTab({
           key={`${viewYear}-${viewMonth}`}
           initial={{
             opacity: 0,
-            y: -4,
+            x: 8,
           }}
           animate={{
             opacity: 1,
-            y: 0,
+            x: 0,
           }}
           transition={{
             duration: 0.18,
           }}
-          className="text-base font-semibold text-black dark:text-white"
+          className="text-lg font-semibold text-black dark:text-white"
         >
           {monthLabel}
         </motion.h2>
         <button
           onClick={handleNextMonth}
-          className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
           aria-label="Next month"
         >
           <ChevronRightIcon size={20} />
@@ -133,7 +133,7 @@ export function CalendarTab({
         {DAYS_OF_WEEK.map((d) => (
           <div
             key={d}
-            className="text-center text-[11px] font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-wide py-1"
+            className="text-center text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest py-1"
           >
             {d}
           </div>
@@ -244,10 +244,10 @@ export function CalendarTab({
       {Object.keys(availability).length === 0 && (
         <div className="flex flex-col items-center justify-center flex-1 px-8 pt-12 text-center">
           <span className="text-5xl mb-4">📅</span>
-          <p className="text-base font-semibold text-black dark:text-white mb-1">
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
             No availability yet
           </p>
-          <p className="text-sm text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             Tap any upcoming date to mark when you're free
           </p>
         </div>

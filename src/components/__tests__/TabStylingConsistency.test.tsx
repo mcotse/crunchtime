@@ -26,7 +26,40 @@ beforeEach(() => {
 })
 
 describe('Tab styling consistency', () => {
-  describe('top padding — tabs without BalanceHeader use pt-4', () => {
+  describe('top padding — standalone tabs use pt-6 to match BalanceHeader', () => {
+    it('PollsTab container has pt-6', async () => {
+      const { PollsTab } = await import('../PollsTab')
+      const { container } = render(
+        <PollsTab
+          polls={[]}
+          members={[]}
+          currentUserId=""
+          onCreatePoll={() => {}}
+          onOpenPoll={() => {}}
+          onVote={() => {}}
+        />,
+      )
+      const root = container.firstElementChild as HTMLElement
+      expect(root.className).toContain('pt-6')
+    })
+
+    it('SettingsTab container has pt-6', async () => {
+      const { SettingsTab } = await import('../SettingsTab')
+      const { container } = render(
+        <SettingsTab
+          members={[]}
+          groupName="Test"
+          onGroupNameChange={() => {}}
+          isDark={false}
+          onToggleDark={() => {}}
+        />,
+      )
+      const root = container.firstElementChild as HTMLElement
+      expect(root.className).toContain('pt-6')
+    })
+  })
+
+  describe('top padding — tabs below BalanceHeader/sub-tab keep pt-4', () => {
     it('FeedTab container has pt-4', async () => {
       const { FeedTab } = await import('../FeedTab')
       const { container } = render(
@@ -36,7 +69,7 @@ describe('Tab styling consistency', () => {
       expect(root.className).toContain('pt-4')
     })
 
-    it('EventsTab container has pt-4', async () => {
+    it('EventsTab container has pt-4 (below sub-tab switcher)', async () => {
       const { EventsTab } = await import('../EventsTab')
       const { container } = render(
         <EventsTab
@@ -49,6 +82,56 @@ describe('Tab styling consistency', () => {
       )
       const root = container.firstElementChild as HTMLElement
       expect(root.className).toContain('pt-4')
+    })
+  })
+
+  describe('first child has no extra top padding (consistent 16px start)', () => {
+    it('PollsTab create button wrapper has no pt-*', async () => {
+      const { PollsTab } = await import('../PollsTab')
+      const { container } = render(
+        <PollsTab
+          polls={[]}
+          members={[]}
+          currentUserId=""
+          onCreatePoll={() => {}}
+          onOpenPoll={() => {}}
+          onVote={() => {}}
+        />,
+      )
+      const root = container.firstElementChild as HTMLElement
+      const firstChild = root.firstElementChild as HTMLElement
+      expect(firstChild.className).not.toMatch(/\bpt-\d/)
+    })
+
+    it('EventsTab create button wrapper has no pt-*', async () => {
+      const { EventsTab } = await import('../EventsTab')
+      const { container } = render(
+        <EventsTab
+          events={[]}
+          members={[]}
+          currentUserId=""
+          onCreateEvent={() => {}}
+          onOpenEvent={() => {}}
+        />,
+      )
+      const root = container.firstElementChild as HTMLElement
+      const firstChild = root.firstElementChild as HTMLElement
+      expect(firstChild.className).not.toMatch(/\bpt-\d/)
+    })
+
+    it('CalendarTab month nav has no pt-*', async () => {
+      const { CalendarTab } = await import('../CalendarTab')
+      const { container } = render(
+        <CalendarTab
+          availability={{}}
+          members={[]}
+          currentUserId=""
+          onDayTap={() => {}}
+        />,
+      )
+      const root = container.firstElementChild as HTMLElement
+      const monthNav = root.firstElementChild as HTMLElement
+      expect(monthNav.className).not.toMatch(/\bpt-\d/)
     })
   })
 

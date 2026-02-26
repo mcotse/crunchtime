@@ -122,10 +122,10 @@ export function PollCard({
       {/* Header */}
       <button
         onClick={() => onTap(poll)}
-        className="w-full text-left px-5 pt-5 pb-3 flex flex-col gap-1.5"
+        className="w-full text-left px-4 pt-5 pb-3 flex flex-col gap-1.5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-base font-semibold text-black dark:text-white leading-snug flex-1">
+          <h3 className="text-base font-semibold text-black dark:text-white leading-snug flex-1 line-clamp-2">
             <span className="mr-1.5">{poll.emoji}</span>
             {poll.title}
           </h3>
@@ -139,7 +139,7 @@ export function PollCard({
                 Open
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-semibold border border-gray-200 dark:border-gray-700">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-semibold border border-gray-200 dark:border-gray-800">
                 <LockIcon size={10} aria-hidden="true" />
                 Closed
               </span>
@@ -171,7 +171,7 @@ export function PollCard({
       </button>
 
       {/* Options */}
-      <div className="px-5 pb-4 space-y-2">
+      <div className="px-4 pb-4 space-y-2">
         {poll.options.map((option, idx) => {
           const pct =
             totalVotes > 0
@@ -249,7 +249,7 @@ export function PollCard({
       {/* Footer */}
       <button
         onClick={() => onTap(poll)}
-        className="w-full flex items-center justify-between px-5 py-3 border-t border-gray-100 dark:border-gray-800"
+        className="w-full flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           {totalVotes > 0 && (

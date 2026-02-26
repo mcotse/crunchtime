@@ -53,7 +53,7 @@ export function EventsTab({
 
   return (
     <div className="flex-1 overflow-y-auto px-4 pb-24 pt-4 space-y-6">
-      <div className="flex justify-center pt-2 pb-2">
+      <div className="flex justify-center pb-2">
         <Button
           onClick={onCreateEvent}
           className="rounded-full h-10 px-6 bg-black dark:bg-white text-white dark:text-black"
@@ -68,6 +68,7 @@ export function EventsTab({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
           className="flex flex-col items-center justify-center py-12 space-y-4"
         >
           <span className="text-5xl">🎉</span>
@@ -83,7 +84,7 @@ export function EventsTab({
       ) : (
         Array.from(grouped.entries()).map(([month, monthEvents]) => (
           <div key={month} className="space-y-2.5">
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest px-2">
+            <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
               {month}
             </h3>
             {monthEvents.map((event, i) => (
@@ -102,12 +103,12 @@ export function EventsTab({
 
       {/* Past events */}
       {pastEvents.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-2">
           <button
             onClick={() => setPastExpanded(v => !v)}
-            className="flex items-center justify-between w-full px-2"
+            className="flex items-center justify-between w-full px-2 hover:opacity-70 transition-opacity"
           >
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+            <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Past ({pastEvents.length})
             </h3>
             <motion.div
@@ -146,7 +147,7 @@ export function EventsTab({
                           {new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </p>
                       </div>
-                      <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
                         {event.rsvps.filter(r => r.status === 'going').length} went
                       </span>
                       <ChevronRightIcon size={14} className="text-gray-300 dark:text-gray-600 flex-shrink-0" />

@@ -87,7 +87,7 @@ export function EventCard({ event, members, currentUserId, onTap, index = 0 }: E
               })}
             </div>
           )}
-          <span className="text-[11px] text-gray-400 dark:text-gray-500">
+          <span className="text-xs text-gray-400 dark:text-gray-500">
             {goingCount} going{maybeCount > 0 ? ` · ${maybeCount} maybe` : ''}
           </span>
         </div>
@@ -95,7 +95,7 @@ export function EventCard({ event, members, currentUserId, onTap, index = 0 }: E
 
       {/* User's RSVP pill */}
       {myRsvp && (
-        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${getRsvpPill(myRsvp.status).className}`}>
+        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${getRsvpPill(myRsvp.status).className}`}>
           {getRsvpPill(myRsvp.status).label}
         </span>
       )}

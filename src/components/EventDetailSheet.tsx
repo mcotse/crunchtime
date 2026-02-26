@@ -51,7 +51,7 @@ function AttendeeChip({ member }: { member: Member }) {
       >
         {member.initials}
       </div>
-      <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+      <span className="text-sm font-medium text-black dark:text-white">
         {member.name.split(' ')[0]}
       </span>
     </div>
@@ -107,13 +107,13 @@ export function EventDetailSheet({
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
-          transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="absolute inset-0 z-50 bg-white dark:bg-gray-950 flex flex-col overflow-hidden"
         >
           {/* Back button */}
           <button
             onClick={onClose}
-            className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+            className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             <ArrowLeftIcon size={20} className="text-gray-700 dark:text-gray-300" />
           </button>
@@ -122,7 +122,7 @@ export function EventDetailSheet({
           <div className="absolute top-4 right-4 z-10">
             <button
               onClick={(e) => { e.stopPropagation(); setShowOverflow(v => !v) }}
-              className="w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <MoreHorizontalIcon size={20} className="text-gray-700 dark:text-gray-300" />
             </button>
@@ -133,7 +133,7 @@ export function EventDetailSheet({
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: -4 }}
                   transition={{ duration: 0.12 }}
-                  className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-w-[180px]"
+                  className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden min-w-[180px]"
                 >
                   <a
                     href={`/api/events/${event.id}/ics`}
@@ -150,7 +150,7 @@ export function EventDetailSheet({
                         onDelete(event.id, event.title)
                         setShowOverflow(false)
                       }}
-                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
+                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-gray-100 dark:border-gray-800"
                     >
                       <Trash2Icon size={15} />
                       Delete Event
@@ -167,7 +167,7 @@ export function EventDetailSheet({
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', damping: 15, stiffness: 200, delay: 0.1 }}
+                transition={{ type: 'spring', damping: 15, stiffness: 200, delay: 0.07 }}
                 className="text-7xl mb-5"
               >
                 {event.emoji}
@@ -176,7 +176,7 @@ export function EventDetailSheet({
               <motion.h1
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.3 }}
+                transition={{ delay: 0.1, duration: 0.3 }}
                 className="text-2xl font-bold text-black dark:text-white mb-3 leading-tight"
               >
                 {event.title}
@@ -185,7 +185,7 @@ export function EventDetailSheet({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.3 }}
+                transition={{ delay: 0.14, duration: 0.3 }}
                 className="flex flex-col items-center gap-1.5"
               >
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
@@ -202,7 +202,7 @@ export function EventDetailSheet({
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.25, duration: 0.3 }}
+                transition={{ delay: 0.18, duration: 0.3 }}
                 className="mt-5 flex items-center justify-center gap-4 text-xs font-medium"
               >
                 {goingMembers.length > 0 && (
@@ -227,8 +227,8 @@ export function EventDetailSheet({
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.3 }}
-              className="px-6 py-5"
+              transition={{ delay: 0.18, duration: 0.3 }}
+              className="px-6 py-6"
             >
               <div className="flex gap-2.5">
                 {RSVP_CONFIG.map(btn => {
@@ -252,18 +252,18 @@ export function EventDetailSheet({
             </motion.div>
 
             {/* Content sections */}
-            <div className="px-6 pb-32 space-y-7">
+            <div className="px-6 pb-24 space-y-6">
               {/* Description */}
               {event.description && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.25 }}
+                  transition={{ delay: 0.21, duration: 0.25 }}
                 >
-                  <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
+                  <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
                     About
                   </h3>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-3.5">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-3.5 border border-gray-100 dark:border-gray-800">
                     {event.description}
                   </p>
                 </motion.div>
@@ -273,16 +273,16 @@ export function EventDetailSheet({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.25 }}
+                transition={{ delay: 0.25, duration: 0.25 }}
                 className="space-y-5"
               >
-                <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                   Guest List ({event.rsvps.length})
                 </h3>
 
                 {goingMembers.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2.5">
+                    <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-2.5">
                       Going ({goingMembers.length})
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -297,7 +297,7 @@ export function EventDetailSheet({
 
                 {maybeMembers.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-2.5">
+                    <p className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-2.5">
                       Maybe ({maybeMembers.length})
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -312,7 +312,7 @@ export function EventDetailSheet({
 
                 {cantGoMembers.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2.5">
+                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
                       Can't Go ({cantGoMembers.length})
                     </p>
                     <div className="flex flex-wrap gap-2 opacity-60">
@@ -330,10 +330,10 @@ export function EventDetailSheet({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.25 }}
+                transition={{ delay: 0.28, duration: 0.25 }}
               >
                 <div className="flex items-center justify-between mb-2.5">
-                  <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                  <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                     Expenses
                     {detail?.linkedTransactions && detail.linkedTransactions.length > 0 && (
                       <span className="ml-1.5 normal-case">
@@ -343,14 +343,14 @@ export function EventDetailSheet({
                   </h3>
                 </div>
                 {detail?.linkedTransactions && detail.linkedTransactions.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden mb-2.5">
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden mb-2.5 border border-gray-100 dark:border-gray-800">
                     {detail.linkedTransactions.map(tx => {
                       const member = getMember(tx.memberId)
                       return (
                         <div key={tx.id} className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
                           {member && (
                             <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0"
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0"
                               style={{ backgroundColor: member.color }}
                             >
                               {member.initials}
@@ -373,7 +373,7 @@ export function EventDetailSheet({
                 {onAddExpense && (
                   <button
                     onClick={() => onAddExpense(event.id)}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-gray-50 dark:bg-gray-900 rounded-2xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 h-12 bg-gray-50 dark:bg-gray-900 rounded-full text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   >
                     <PlusIcon size={14} />
                     Add Expense
@@ -386,14 +386,14 @@ export function EventDetailSheet({
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.45, duration: 0.25 }}
+                  transition={{ delay: 0.32, duration: 0.25 }}
                 >
-                  <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
+                  <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
                     Linked Poll
                   </h3>
                   <button
                     onClick={() => onOpenPoll?.(detail.linkedPoll!.id)}
-                    className="w-full flex items-center gap-3.5 bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-4 text-left active:scale-[0.98] transition-transform"
+                    className="w-full flex items-center gap-3.5 bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-4 text-left active:scale-[0.98] transition-transform border border-gray-100 dark:border-gray-800"
                   >
                     <span className="text-2xl">{detail.linkedPoll.emoji}</span>
                     <div className="flex-1 min-w-0">
@@ -412,12 +412,12 @@ export function EventDetailSheet({
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.25 }}
+                  transition={{ delay: 0.35, duration: 0.25 }}
                 >
-                  <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
+                  <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">
                     Availability · {new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </h3>
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-4 space-y-4">
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl px-4 py-4 space-y-4 border border-gray-100 dark:border-gray-800">
                     <div>
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">
                         ☀️ Morning ({detail.dateAvailability.morning.length})

@@ -53,17 +53,17 @@ export function AnalyticsTab({ members, transactions, isDark }: AnalyticsTabProp
   }).format(n);
   const isPositive = (n: number) => n >= 0;
   return (
-    <div className="flex-1 overflow-y-auto px-4 pb-32 pt-4 space-y-8">
+    <div className="flex-1 overflow-y-auto px-4 pb-24 pt-4 space-y-6">
       <h2 className="text-lg font-semibold text-black dark:text-white px-2">
         Analytics
       </h2>
 
       {/* Group Balance Over Time */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest px-2">
+      <div className="space-y-2">
+        <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
           Group Balance Over Time
         </h3>
-        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4">
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
@@ -134,8 +134,8 @@ export function AnalyticsTab({ members, transactions, isDark }: AnalyticsTabProp
       </div>
 
       {/* Leaderboard */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest px-2">
+      <div className="space-y-2">
+        <h3 className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">
           Contribution Leaderboard
         </h3>
         <div className="space-y-0">
@@ -147,11 +147,11 @@ export function AnalyticsTab({ members, transactions, isDark }: AnalyticsTabProp
                 key={member.id}
                 initial={{
                   opacity: 0,
-                  x: -6
+                  y: 6
                 }}
                 animate={{
                   opacity: 1,
-                  x: 0
+                  y: 0
                 }}
                 transition={{
                   duration: 0.25,
@@ -167,7 +167,7 @@ export function AnalyticsTab({ members, transactions, isDark }: AnalyticsTabProp
 
                 {/* Avatar */}
                 <div
-                  className="h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0"
+                  className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0"
                   style={{
                     backgroundColor: member.color
                   }}>
