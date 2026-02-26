@@ -125,14 +125,20 @@ export function SettingsTab({
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-400';
   const divider = isDark ? 'border-gray-800' : 'border-gray-100';
   const hoverBg = isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-50';
-  const settingsGroups: Array<{ title: string; items: Array<{ icon: React.ElementType; label: string; value?: string; color?: string }> }> = [
+  const handleLogout = async () => {
+    const { url } = await fetch('/api/logout').then(r => r.json());
+    if (url) window.location.href = url;
+  };
+
+  const settingsGroups: Array<{ title: string; items: Array<{ icon: React.ElementType; label: string; value?: string; color?: string; onClick?: () => void }> }> = [
   {
     title: 'Support',
     items: [
     {
       icon: LogOutIcon,
       label: 'Log Out',
-      color: 'text-red-500'
+      color: 'text-red-500',
+      onClick: handleLogout
     }]
 
   }];
@@ -411,6 +417,7 @@ export function SettingsTab({
             {group.items.map((item, itemIndex) =>
           <button
             key={itemIndex}
+            onClick={item.onClick}
             className={`w-full flex items-center justify-between p-4 transition-colors border-b last:border-0 ${divider} ${hoverBg}`}>
 
                 <div className="flex items-center space-x-3">

@@ -10,12 +10,14 @@ import { calendarRouter } from './routes/calendar.js'
 import { sseRouter } from './routes/sse.js'
 import { eventsRouter } from './routes/events.js'
 import { pushRouter } from './routes/push.js'
+import { logoutRouter } from './routes/logout.js'
 import { authMiddleware } from './middleware/auth.js'
 
 const app = new Hono()
 
 app.use('/api/*', authMiddleware)
 
+app.route('/api/logout', logoutRouter)
 app.route('/api/members', membersRouter)
 app.route('/api/transactions', transactionsRouter)
 app.route('/api/me', meRouter)
