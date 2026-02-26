@@ -181,6 +181,13 @@ eventsRouter.patch('/:id', async (c) => {
     time?: string | null
   }>()
 
+  if (body.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(body.date)) {
+    return c.json({ error: 'invalid date format' }, 400)
+  }
+  if (body.time !== undefined && body.time !== null && !/^\d{2}:\d{2}$/.test(body.time)) {
+    return c.json({ error: 'invalid time format' }, 400)
+  }
+
   const newTitle = body.title?.trim() ?? row.title
   const newEmoji = body.emoji ?? row.emoji
   const newDescription = body.description?.trim() ?? row.description

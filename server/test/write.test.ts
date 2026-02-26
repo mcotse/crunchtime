@@ -115,6 +115,26 @@ describe('POST /api/transactions — validation', () => {
   })
 })
 
+describe('GET /api/transactions — editHistory safety', () => {
+  beforeEach(() => seedMember())
+
+  it('does not crash when editHistory is corrupted', async () => {
+    const app = await getApp()
+    const { default: db } = await import('../db.js')
+    db.prepare(`
+      INSERT OR IGNORE INTO transactions (id, description, amount, member_id, date, category, edit_history)
+      VALUES ('tx-corrupt', 'Bad History', -5, 'm1', '2026-01-01', 'General', 'NOT-JSON')
+    `).run()
+
+    const res = await app.request('/api/transactions')
+    expect(res.status).toBe(200)
+    const body = await res.json() as any[]
+    const corrupt = body.find((t: any) => t.id === 'tx-corrupt')
+    expect(corrupt).toBeDefined()
+    expect(Array.isArray(corrupt.editHistory)).toBe(true)
+  })
+})
+
 describe('PATCH /api/transactions/:id', () => {
   beforeEach(() => seedMember())
 
