@@ -1,10 +1,10 @@
 import db from './db.ts'
 import { MEMBERS, TRANSACTIONS } from '../src/data/mockData.ts'
-import { SEED_POLLS } from './seed-polls.ts'
+import { SEED_POLLS, SEED_POLL_COMMENTS } from './seed-polls.ts'
 import { SEED_EVENTS } from './seed-events.ts'
 
 // Clear existing data (order matters due to FK constraints)
-db.exec('DELETE FROM event_rsvps; DELETE FROM calendar_availability; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM transactions; DELETE FROM polls; DELETE FROM events; DELETE FROM members;')
+db.exec('DELETE FROM event_rsvps; DELETE FROM calendar_availability; DELETE FROM poll_comments; DELETE FROM poll_votes; DELETE FROM poll_options; DELETE FROM transactions; DELETE FROM polls; DELETE FROM events; DELETE FROM members;')
 
 // Seed members (without balance — computed from transactions)
 const insertMember = db.prepare(`
@@ -40,6 +40,14 @@ for (const p of SEED_POLLS) {
       insertVote.run(o.id, voterId)
     }
   }
+}
+
+// Seed poll comments
+const insertComment = db.prepare(
+  'INSERT OR REPLACE INTO poll_comments (id, poll_id, member_id, text, created_at) VALUES (?, ?, ?, ?, ?)'
+)
+for (const c of SEED_POLL_COMMENTS) {
+  insertComment.run(c.id, c.pollId, c.memberId, c.text, c.createdAt)
 }
 
 // Seed calendar availability

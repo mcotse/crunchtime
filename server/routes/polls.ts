@@ -30,11 +30,23 @@ type VoteRow = {
   member_id: string
 }
 
+type CommentRow = {
+  id: string
+  poll_id: string
+  member_id: string
+  text: string
+  created_at: string
+  edited_at: string | null
+}
+
 function serializePoll(row: PollRow) {
   const options = db.prepare('SELECT id, text FROM poll_options WHERE poll_id = ?').all(row.id) as OptionRow[]
   const votes = db.prepare(
     'SELECT option_id, member_id FROM poll_votes WHERE option_id IN (SELECT id FROM poll_options WHERE poll_id = ?)'
   ).all(row.id) as VoteRow[]
+  const comments = db.prepare(
+    'SELECT id, poll_id, member_id, text, created_at, edited_at FROM poll_comments WHERE poll_id = ? ORDER BY created_at ASC'
+  ).all(row.id) as CommentRow[]
 
   const votesByOption = new Map<string, string[]>()
   for (const v of votes) {
@@ -59,6 +71,13 @@ function serializePoll(row: PollRow) {
       id: o.id,
       text: o.text,
       voterIds: votesByOption.get(o.id) ?? [],
+    })),
+    comments: comments.map((c) => ({
+      id: c.id,
+      memberId: c.member_id,
+      text: c.text,
+      createdAt: c.created_at,
+      editedAt: c.edited_at ?? undefined,
     })),
   }
 }
@@ -224,6 +243,69 @@ pollsRouter.patch('/:id/unarchive', (c) => {
   if (row.creator_id !== member.id) return c.json({ error: 'only the creator can unarchive' }, 403)
 
   db.prepare('UPDATE polls SET is_archived = 0, archived_at = NULL WHERE id = ?').run(pollId)
+
+  const poll = serializePoll(db.prepare('SELECT * FROM polls WHERE id = ?').get(pollId) as PollRow)
+  broadcastSSE('poll_updated', poll)
+  return c.json(poll)
+})
+
+// POST /api/polls/:id/comments — add a comment
+pollsRouter.post('/:id/comments', async (c) => {
+  const pollId = c.req.param('id')
+  const row = db.prepare('SELECT * FROM polls WHERE id = ?').get(pollId) as PollRow | undefined
+  if (!row) return c.json({ error: 'poll not found' }, 404)
+
+  const body = await c.req.json<{ text?: string }>()
+  if (!body.text?.trim()) return c.json({ error: 'text is required' }, 400)
+
+  const member = c.get('member')
+  const commentId = randomUUID()
+  const now = new Date().toISOString()
+
+  db.prepare('INSERT INTO poll_comments (id, poll_id, member_id, text, created_at) VALUES (?, ?, ?, ?, ?)').run(
+    commentId, pollId, member.id, body.text.trim(), now
+  )
+
+  const poll = serializePoll(db.prepare('SELECT * FROM polls WHERE id = ?').get(pollId) as PollRow)
+  broadcastSSE('poll_updated', poll)
+  return c.json(poll, 201)
+})
+
+// PATCH /api/polls/:id/comments/:commentId — edit a comment (author only)
+pollsRouter.patch('/:id/comments/:commentId', async (c) => {
+  const pollId = c.req.param('id')
+  const commentId = c.req.param('commentId')
+
+  const comment = db.prepare('SELECT * FROM poll_comments WHERE id = ? AND poll_id = ?').get(commentId, pollId) as CommentRow | undefined
+  if (!comment) return c.json({ error: 'comment not found' }, 404)
+
+  const member = c.get('member')
+  if (comment.member_id !== member.id) return c.json({ error: 'only the author can edit' }, 403)
+
+  const body = await c.req.json<{ text?: string }>()
+  if (!body.text?.trim()) return c.json({ error: 'text is required' }, 400)
+
+  db.prepare('UPDATE poll_comments SET text = ?, edited_at = ? WHERE id = ?').run(
+    body.text.trim(), new Date().toISOString(), commentId
+  )
+
+  const poll = serializePoll(db.prepare('SELECT * FROM polls WHERE id = ?').get(pollId) as PollRow)
+  broadcastSSE('poll_updated', poll)
+  return c.json(poll)
+})
+
+// DELETE /api/polls/:id/comments/:commentId — delete a comment (author only)
+pollsRouter.delete('/:id/comments/:commentId', (c) => {
+  const pollId = c.req.param('id')
+  const commentId = c.req.param('commentId')
+
+  const comment = db.prepare('SELECT * FROM poll_comments WHERE id = ? AND poll_id = ?').get(commentId, pollId) as CommentRow | undefined
+  if (!comment) return c.json({ error: 'comment not found' }, 404)
+
+  const member = c.get('member')
+  if (comment.member_id !== member.id) return c.json({ error: 'only the author can delete' }, 403)
+
+  db.prepare('DELETE FROM poll_comments WHERE id = ?').run(commentId)
 
   const poll = serializePoll(db.prepare('SELECT * FROM polls WHERE id = ?').get(pollId) as PollRow)
   broadcastSSE('poll_updated', poll)

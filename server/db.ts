@@ -87,6 +87,15 @@ db.exec(`
     status    TEXT NOT NULL CHECK(status IN ('going', 'maybe', 'cant_go')),
     PRIMARY KEY (event_id, member_id)
   );
+
+  CREATE TABLE IF NOT EXISTS poll_comments (
+    id         TEXT PRIMARY KEY,
+    poll_id    TEXT NOT NULL REFERENCES polls(id) ON DELETE CASCADE,
+    member_id  TEXT NOT NULL REFERENCES members(id),
+    text       TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    edited_at  TEXT
+  );
 `)
 
 // Idempotent migrations: add event_id to transactions and polls

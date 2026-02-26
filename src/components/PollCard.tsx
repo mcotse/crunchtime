@@ -6,6 +6,7 @@ import {
   CheckIcon,
   ClockIcon,
   Layers2Icon,
+  MessageCircleIcon,
 } from 'lucide-react'
 import { Poll } from '../data/pollsData'
 import { Member } from '../data/mockData'
@@ -215,8 +216,7 @@ export function PollCard({
                     transformOrigin: 'left',
                   }}
                 />
-                <div className="relative flex flex-col gap-1.5">
-                  <div className="flex items-center gap-3">
+                <div className="relative flex items-center gap-3">
                     <div
                       className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isVoted ? 'bg-black dark:bg-white border-black dark:border-white' : 'border-gray-300 dark:border-gray-600'}`}
                     >
@@ -233,44 +233,11 @@ export function PollCard({
                     >
                       {option.text}
                     </span>
-                    {isVoted && (
-                      <span className="flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-black dark:bg-white text-white dark:text-black leading-none">
-                        You
-                      </span>
-                    )}
                     <span
                       className={`text-sm font-semibold tabular-nums flex-shrink-0 ${isLeading && !isOpen ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
                     >
                       {pct}%
                     </span>
-                  </div>
-                  {option.voterIds.length > 0 && (
-                    <div className="flex items-center pl-8">
-                      {option.voterIds.slice(0, 6).map((voterId, vi) => {
-                        const member = members.find((m) => m.id === voterId)
-                        if (!member) return null
-                        return (
-                          <div
-                            key={voterId}
-                            className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-semibold flex-shrink-0 border-2 border-white dark:border-gray-900"
-                            style={{
-                              backgroundColor: member.color,
-                              marginLeft: vi === 0 ? 0 : -6,
-                              zIndex: option.voterIds.length - vi,
-                              position: 'relative',
-                            }}
-                          >
-                            {member.initials.charAt(0)}
-                          </div>
-                        )
-                      })}
-                      {option.voterIds.length > 6 && (
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">
-                          +{option.voterIds.length - 6}
-                        </span>
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
             </motion.button>
@@ -309,6 +276,12 @@ export function PollCard({
           <span className="text-xs text-gray-400 dark:text-gray-500">
             {totalVotes} voted
           </span>
+          {poll.comments.length > 0 && (
+            <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+              <MessageCircleIcon size={11} />
+              {poll.comments.length}
+            </span>
+          )}
         </div>
         <ChevronRightIcon size={12} className="text-gray-300 dark:text-gray-600" />
       </button>

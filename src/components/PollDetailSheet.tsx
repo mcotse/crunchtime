@@ -10,8 +10,11 @@ import {
   ArchiveRestoreIcon,
   CheckIcon,
   Trash2Icon,
+  MessageCircleIcon,
+  PencilIcon,
+  SendIcon,
 } from 'lucide-react'
-import { Poll, PollOption } from '../data/pollsData'
+import { Poll, PollOption, PollComment } from '../data/pollsData'
 import { Member } from '../data/mockData'
 
 interface PollDetailSheetProps {
@@ -24,6 +27,9 @@ interface PollDetailSheetProps {
   onAddOption: (pollId: string, text: string) => void
   onArchive: (pollId: string) => void
   onUnarchive: (pollId: string) => void
+  onAddComment: (pollId: string, text: string) => void
+  onEditComment: (pollId: string, commentId: string, text: string) => void
+  onDeleteComment: (pollId: string, commentId: string) => void
   isAdmin?: boolean
   onDelete?: (pollId: string, title: string) => void
 }
@@ -41,6 +47,20 @@ function formatExpiry(dateStr: string): string {
   })
 }
 
+function formatRelativeTime(dateStr: string): string {
+  const now = Date.now()
+  const then = new Date(dateStr).getTime()
+  const diffMs = now - then
+  const diffMin = Math.floor(diffMs / 60000)
+  if (diffMin < 1) return 'just now'
+  if (diffMin < 60) return `${diffMin}m ago`
+  const diffHr = Math.floor(diffMin / 60)
+  if (diffHr < 24) return `${diffHr}h ago`
+  const diffDay = Math.floor(diffHr / 24)
+  if (diffDay < 30) return `${diffDay}d ago`
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export function PollDetailSheet({
   poll,
   members,
@@ -51,12 +71,18 @@ export function PollDetailSheet({
   onAddOption,
   onArchive,
   onUnarchive,
+  onAddComment,
+  onEditComment,
+  onDeleteComment,
   isAdmin,
   onDelete,
 }: PollDetailSheetProps) {
   const [showOverflow, setShowOverflow] = useState(false)
   const [voterSheetOption, setVoterSheetOption] = useState<PollOption | null>(null)
   const [newOptionText, setNewOptionText] = useState('')
+  const [commentText, setCommentText] = useState('')
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
+  const [editingCommentText, setEditingCommentText] = useState('')
 
   if (!poll) return null
 
@@ -103,6 +129,21 @@ export function PollDetailSheet({
     if (!text) return
     onAddOption(poll.id, text)
     setNewOptionText('')
+  }
+
+  const handleSubmitComment = () => {
+    const text = commentText.trim()
+    if (!text) return
+    onAddComment(poll.id, text)
+    setCommentText('')
+  }
+
+  const handleSaveEdit = (commentId: string) => {
+    const text = editingCommentText.trim()
+    if (!text) return
+    onEditComment(poll.id, commentId, text)
+    setEditingCommentId(null)
+    setEditingCommentText('')
   }
 
   return (
@@ -385,6 +426,118 @@ export function PollDetailSheet({
                     )}
                   </div>
                 )}
+
+                {/* Comments section */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-1.5">
+                    <MessageCircleIcon size={12} className="text-gray-400" />
+                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+                      Comments{poll.comments.length > 0 ? ` (${poll.comments.length})` : ''}
+                    </h3>
+                  </div>
+
+                  {poll.comments.length > 0 && (
+                    <div className="space-y-3">
+                      {poll.comments.map((comment) => {
+                        const member = getMember(comment.memberId)
+                        const isOwn = comment.memberId === currentUserId
+                        const isEditing = editingCommentId === comment.id
+                        return (
+                          <div key={comment.id} className="flex gap-2.5">
+                            <div
+                              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0 mt-0.5"
+                              style={{ backgroundColor: member?.color ?? '#999' }}
+                            >
+                              {member?.initials ?? '?'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-semibold text-black dark:text-white truncate">
+                                  {member?.name ?? 'Unknown'}
+                                </span>
+                                <span className="text-[10px] text-gray-400 dark:text-gray-500 flex-shrink-0">
+                                  {formatRelativeTime(comment.createdAt)}
+                                </span>
+                                {comment.editedAt && (
+                                  <span className="text-[10px] text-gray-400 dark:text-gray-500 italic flex-shrink-0">
+                                    edited
+                                  </span>
+                                )}
+                              </div>
+                              {isEditing ? (
+                                <div className="flex items-center gap-1.5 mt-1">
+                                  <input
+                                    value={editingCommentText}
+                                    onChange={(e) => setEditingCommentText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') handleSaveEdit(comment.id)
+                                      if (e.key === 'Escape') { setEditingCommentId(null); setEditingCommentText('') }
+                                    }}
+                                    autoFocus
+                                    className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-lg px-2.5 py-1.5 outline-none text-black dark:text-white border border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors"
+                                  />
+                                  <button
+                                    onClick={() => handleSaveEdit(comment.id)}
+                                    className="p-1 text-black dark:text-white"
+                                  >
+                                    <CheckIcon size={14} />
+                                  </button>
+                                  <button
+                                    onClick={() => { setEditingCommentId(null); setEditingCommentText('') }}
+                                    className="p-1 text-gray-400"
+                                  >
+                                    <XIcon size={14} />
+                                  </button>
+                                </div>
+                              ) : (
+                                <p className="text-sm text-gray-700 dark:text-gray-300 mt-0.5 leading-relaxed">
+                                  {comment.text}
+                                </p>
+                              )}
+                              {isOwn && !isEditing && (
+                                <div className="flex items-center gap-3 mt-1">
+                                  <button
+                                    onClick={() => { setEditingCommentId(comment.id); setEditingCommentText(comment.text) }}
+                                    className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 flex items-center gap-0.5 transition-colors"
+                                  >
+                                    <PencilIcon size={9} />
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => onDeleteComment(poll.id, comment.id)}
+                                    className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 flex items-center gap-0.5 transition-colors"
+                                  >
+                                    <Trash2Icon size={9} />
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {/* Comment input */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSubmitComment()}
+                      placeholder="Add a comment..."
+                      className="flex-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-full px-4 py-2 outline-none text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors"
+                    />
+                    {commentText.trim() && (
+                      <button
+                        onClick={handleSubmitComment}
+                        className="p-2 bg-black dark:bg-white rounded-full text-white dark:text-black flex-shrink-0"
+                      >
+                        <SendIcon size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>

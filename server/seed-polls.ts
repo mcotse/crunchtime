@@ -10,6 +10,37 @@ twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
 const oneWeekAgo = new Date(NOW)
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
+export const SEED_POLL_COMMENTS = [
+  {
+    id: 'pc1',
+    pollId: 'p1',
+    memberId: 'm2',
+    text: 'I heard Bella Napoli has a new chef — should be amazing!',
+    createdAt: new Date(NOW.getTime() - 1.5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'pc2',
+    pollId: 'p1',
+    memberId: 'm4',
+    text: 'Casa Fuego has that BOGO taco deal on Thursdays',
+    createdAt: new Date(NOW.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'pc3',
+    pollId: 'p2',
+    memberId: 'm1',
+    text: 'Can we split the Netflix family plan? Way cheaper per person',
+    createdAt: new Date(NOW.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'pc4',
+    pollId: 'p3',
+    memberId: 'm5',
+    text: 'Fridays work better for me — less hectic than Mondays',
+    createdAt: new Date(NOW.getTime() - 0.5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+]
+
 export const SEED_POLLS = [
   {
     id: 'p1',

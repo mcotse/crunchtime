@@ -39,6 +39,17 @@ Group polls let members vote on shared decisions (dinner spots, streaming servic
 | member_id | TEXT FK → members | |
 | | | Composite PK (option_id, member_id) |
 
+**poll_comments**
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | TEXT PK | UUID |
+| poll_id | TEXT FK → polls | CASCADE on delete |
+| member_id | TEXT FK → members | Comment author |
+| text | TEXT NOT NULL | Comment body |
+| created_at | TEXT | ISO timestamp, defaults to now |
+| edited_at | TEXT | Set when comment is edited |
+
 ### TypeScript Types (`src/data/pollsData.ts`)
 
 ```typescript
@@ -48,11 +59,20 @@ interface PollOption {
   voterIds: string[]
 }
 
+interface PollComment {
+  id: string
+  memberId: string
+  text: string
+  createdAt: string
+  editedAt?: string
+}
+
 interface Poll {
   id: string
   emoji: string
   title: string
   options: PollOption[]
+  comments: PollComment[]
   creatorId: string
   createdAt: string
   expiresAt?: string
@@ -76,6 +96,9 @@ All routes are mounted at `/api/polls`.
 | POST | `/` | Create a poll |
 | POST | `/:id/vote` | Cast or update votes |
 | POST | `/:id/options` | Add a new option |
+| POST | `/:id/comments` | Add a comment |
+| PATCH | `/:id/comments/:commentId` | Edit a comment (author only) |
+| DELETE | `/:id/comments/:commentId` | Delete a comment (author only) |
 | PATCH | `/:id/archive` | Archive a poll (creator only) |
 | PATCH | `/:id/unarchive` | Unarchive a poll (creator only) |
 | DELETE | `/:id` | Delete a poll (admin only) |
@@ -115,9 +138,33 @@ Replaces the current user's previous votes atomically. Validates multi-select ru
 
 Only works if `allowMembersToAddOptions` is true and the poll hasn't expired.
 
+### POST `/:id/comments` — Add comment
+
+```json
+{
+  "text": "Great idea!"
+}
+```
+
+Returns the full updated poll. Broadcasts `poll_updated` SSE event.
+
+### PATCH `/:id/comments/:commentId` — Edit comment (author only)
+
+```json
+{
+  "text": "Updated comment text"
+}
+```
+
+Sets `edited_at` timestamp. Returns `403` if not the comment author.
+
+### DELETE `/:id/comments/:commentId` — Delete comment (author only)
+
+Returns `403` if not the comment author, `404` if comment not found.
+
 ### DELETE `/:id` — Delete (admin only)
 
-Permanently removes the poll and all its options and votes (via ON DELETE CASCADE). Returns `403` if the authenticated user is not an admin, `404` if the poll does not exist. Broadcasts a `poll_updated` SSE event on success.
+Permanently removes the poll and all its options, votes, and comments (via ON DELETE CASCADE). Returns `403` if the authenticated user is not an admin, `404` if the poll does not exist. Broadcasts a `poll_updated` SSE event on success.
 
 ---
 
@@ -132,8 +179,8 @@ All mutations broadcast a `poll_updated` SSE event (via `GET /api/events`) with 
 | Component | File | Role |
 |-----------|------|------|
 | PollsTab | `src/components/PollsTab.tsx` | Main tab view — active polls (newest first) + collapsible archived section |
-| PollCard | `src/components/PollCard.tsx` | Inline-votable card with progress bars, emoji, stacked voter avatars |
-| PollDetailSheet | `src/components/PollDetailSheet.tsx` | Bottom sheet with full voter names, winner banner, add-option input, archive controls, admin delete |
+| PollCard | `src/components/PollCard.tsx` | Inline-votable card with progress bars, emoji, comment count in footer |
+| PollDetailSheet | `src/components/PollDetailSheet.tsx` | Bottom sheet with full voter names, winner banner, add-option input, comments section, archive controls, admin delete |
 | CreatePollSheet | `src/components/CreatePollSheet.tsx` | Bottom sheet form — emoji picker, question, dynamic options, multi-select toggle, expiration date (default: +7 days) |
 
 ### UI Behavior
@@ -141,13 +188,15 @@ All mutations broadcast a `poll_updated` SSE event (via `GET /api/events`) with 
 - **Active polls** are sorted newest-first by `createdAt`.
 - **Closed polls** show a winner banner (or "Tie") at the top of the detail sheet.
 - **Inline voting** on PollCard — tap an option to vote without opening the detail sheet.
-- **Voter avatars** on PollCard show stacked colored circles (icons only, no names). Detail sheet shows full names.
+- **Voter avatars** shown in detail sheet under each option with full names. Not shown in list view (PollCard).
+- **Comment count** shown in PollCard footer (MessageCircle icon + count) when comments exist.
+- **Comments** in PollDetailSheet — threaded below voting options. Shows member avatar, name, relative timestamp, and edit/delete buttons for own comments. An "edited" label appears on modified comments.
 - **Emoji picker** in CreatePollSheet offers 18 preset emojis.
-- **"You" pill** on PollCard — the option(s) the current user voted for show a small `You` badge inline next to the option text, between the label and the percentage.
+- **Voted indicator** — the option(s) the current user voted for show a filled checkbox circle.
 - **Unsaved changes warning** when closing CreatePollSheet with content.
 
 ---
 
 ## Seed Data
 
-`server/seed-polls.ts` provides 6 sample polls covering common use cases: team dinner, streaming services, meeting schedule, budget increase, vacation destination, and group fund naming.
+`server/seed-polls.ts` provides 6 sample polls covering common use cases: team dinner, streaming services, meeting schedule, budget increase, vacation destination, and group fund naming. Also includes 4 sample poll comments across the first three polls.

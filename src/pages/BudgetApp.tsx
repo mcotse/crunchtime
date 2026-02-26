@@ -228,6 +228,45 @@ export function BudgetApp() {
     }
   };
 
+  // --- Comment handlers ---
+
+  const handleAddComment = async (pollId: string, text: string) => {
+    const res = await fetch(`/api/polls/${pollId}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (res.ok) {
+      const updated: Poll = await res.json()
+      setPolls(prev => prev.map(p => p.id === pollId ? updated : p))
+      setSelectedPoll(prev => prev && prev.id === pollId ? updated : prev)
+    }
+  }
+
+  const handleEditComment = async (pollId: string, commentId: string, text: string) => {
+    const res = await fetch(`/api/polls/${pollId}/comments/${commentId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (res.ok) {
+      const updated: Poll = await res.json()
+      setPolls(prev => prev.map(p => p.id === pollId ? updated : p))
+      setSelectedPoll(prev => prev && prev.id === pollId ? updated : prev)
+    }
+  }
+
+  const handleDeleteComment = async (pollId: string, commentId: string) => {
+    const res = await fetch(`/api/polls/${pollId}/comments/${commentId}`, {
+      method: 'DELETE',
+    })
+    if (res.ok) {
+      const updated: Poll = await res.json()
+      setPolls(prev => prev.map(p => p.id === pollId ? updated : p))
+      setSelectedPoll(prev => prev && prev.id === pollId ? updated : prev)
+    }
+  }
+
   // --- Calendar handlers ---
   const handleDayTap = (dateStr: string) => {
     setSelectedCalendarDate(dateStr)
@@ -477,6 +516,9 @@ export function BudgetApp() {
           onAddOption={handleAddOption}
           onArchive={handleArchive}
           onUnarchive={handleUnarchive}
+          onAddComment={handleAddComment}
+          onEditComment={handleEditComment}
+          onDeleteComment={handleDeleteComment}
           isAdmin={isAdmin}
           onDelete={(id, title) => handleRequestDelete('poll', id, title)} />
 
