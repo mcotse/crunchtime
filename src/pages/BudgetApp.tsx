@@ -398,7 +398,7 @@ export function BudgetApp() {
 
   return (
     <div
-      className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
+      className={`h-dvh overflow-hidden font-sans selection:bg-gray-200 pt-safe-top ${isDark ? 'dark bg-gray-950 text-white' : 'bg-white text-black'}`}>
 
       <div className="max-w-md mx-auto h-full relative flex flex-col">
         {activeTab !== 'home' && activeTab !== 'polls' && activeTab !== 'calendar' && activeTab !== 'settings' &&
@@ -444,29 +444,31 @@ export function BudgetApp() {
             onVote={handleVote} />
           }
           {activeTab === 'calendar' && (
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col justify-center overflow-hidden">
               {/* Sub-tab switcher */}
-              <div className="flex items-center justify-center gap-1 pt-4 pb-2 px-4">
-                <button
-                  onClick={() => setCalendarSubTab('availability')}
-                  className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                    calendarSubTab === 'availability'
-                      ? 'bg-black text-white dark:bg-white dark:text-black'
-                      : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'
-                  }`}
-                >
-                  Availability
-                </button>
-                <button
-                  onClick={() => setCalendarSubTab('events')}
-                  className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                    calendarSubTab === 'events'
-                      ? 'bg-black text-white dark:bg-white dark:text-black'
-                      : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'
-                  }`}
-                >
-                  Events
-                </button>
+              <div className="flex justify-center pb-4 px-4">
+                <div className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-900 rounded-full p-1">
+                  <button
+                    onClick={() => setCalendarSubTab('availability')}
+                    className={`h-9 px-5 text-sm font-semibold rounded-full transition-all ${
+                      calendarSubTab === 'availability'
+                        ? 'bg-black text-white dark:bg-white dark:text-black'
+                        : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'
+                    }`}
+                  >
+                    Availability
+                  </button>
+                  <button
+                    onClick={() => setCalendarSubTab('events')}
+                    className={`h-9 px-5 text-sm font-semibold rounded-full transition-all ${
+                      calendarSubTab === 'events'
+                        ? 'bg-black text-white dark:bg-white dark:text-black'
+                        : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400'
+                    }`}
+                  >
+                    Events
+                  </button>
+                </div>
               </div>
               {calendarSubTab === 'availability' ? (
                 <CalendarTab

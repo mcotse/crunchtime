@@ -1,9 +1,16 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { SettingsTab } from '../SettingsTab'
 import { Member } from '../../data/mockData'
+
+vi.mock('../../lib/pushNotifications', () => ({
+  isPushSupported: () => false,
+  isPushSubscribed: async () => false,
+  subscribeToPush: async () => {},
+  unsubscribeFromPush: async () => {},
+}))
 
 const members: Member[] = [
   { id: 'm1', name: 'Alice Rivera', initials: 'AR', color: '#E85D4A', phone: '555-0101', email: 'alice@example.com', balance: 100 },
@@ -19,6 +26,22 @@ const defaultProps = {
 }
 
 describe('SettingsTab', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
+
   it('renders the Settings heading', () => {
     render(<SettingsTab {...defaultProps} />)
     expect(screen.getByText('Settings')).toBeInTheDocument()

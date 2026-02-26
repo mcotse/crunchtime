@@ -27,6 +27,7 @@ const activePoll: Poll = {
     { id: 'o1', text: 'Option A', voterIds: ['u1'] },
     { id: 'o2', text: 'Option B', voterIds: [] },
   ],
+  comments: [],
 }
 
 const archivedPoll: Poll = {
@@ -41,6 +42,7 @@ const archivedPoll: Poll = {
   options: [
     { id: 'o3', text: 'Option X', voterIds: ['u1'] },
   ],
+  comments: [],
 }
 
 const expiredPoll: Poll = {
@@ -56,6 +58,7 @@ const expiredPoll: Poll = {
   options: [
     { id: 'o4', text: 'Option Y', voterIds: [] },
   ],
+  comments: [],
 }
 
 const noop = () => {}

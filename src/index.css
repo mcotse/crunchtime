@@ -50,8 +50,11 @@
   scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
-/* Extra bottom padding for tab bar when installed as a PWA */
+/* Safe-area insets for PWA standalone mode (notch, home indicator, etc.) */
 @media (display-mode: standalone) {
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
   .tab-bar {
     padding-bottom: calc(env(safe-area-inset-bottom) + 5px);
   }

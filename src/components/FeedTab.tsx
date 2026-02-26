@@ -19,7 +19,7 @@ export function FeedTab({ transactions, members, onEdit, isAdmin, onDelete }: Fe
     }).format(date);
   };
   return (
-    <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-6">
+    <div className="flex-1 overflow-y-auto px-4 pb-24 pt-4 space-y-6">
       <h2 className="text-lg font-semibold text-black dark:text-white px-2 pt-2">
         Recent Activity
       </h2>

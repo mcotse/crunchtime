@@ -92,9 +92,9 @@ export function CalendarTab({
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <div className="flex-1 flex flex-col pb-24">
+    <div className="flex flex-col pb-24 px-4">
       {/* Month navigation */}
-      <div className="flex items-center justify-between px-5 pt-2 pb-3">
+      <div className="flex items-center justify-between pt-4 pb-4">
         <button
           onClick={handlePrevMonth}
           className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
@@ -129,7 +129,7 @@ export function CalendarTab({
       </div>
 
       {/* Day-of-week headers */}
-      <div className="grid grid-cols-7 px-3 mb-1">
+      <div className="grid grid-cols-7 mb-2">
         {DAYS_OF_WEEK.map((d) => (
           <div
             key={d}
@@ -155,7 +155,7 @@ export function CalendarTab({
           duration: 0.2,
           ease: 'easeOut',
         }}
-        className="grid grid-cols-7 gap-1 px-3"
+        className="grid grid-cols-7 gap-1.5"
       >
         {cells.map((day, idx) => {
           if (day === null) {

@@ -24,6 +24,7 @@ const basePoll: Poll = {
     { id: 'o1', text: 'Italian', voterIds: ['u1'] },
     { id: 'o2', text: 'Japanese', voterIds: ['u2'] },
   ],
+  comments: [],
 }
 
 describe('PollCard – own vote "You" pill', () => {
