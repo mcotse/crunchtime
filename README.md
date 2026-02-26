@@ -39,6 +39,7 @@ A mobile-first group expense tracker and shared budget manager. Track contributi
 git clone <repo>
 cd crunchtime
 npm install
+cp .env.example .env
 ```
 
 Seed the database with sample members and transactions:
@@ -52,20 +53,36 @@ npm run seed
 Open two terminals:
 
 ```bash
-# Terminal 1 — API server (port 3000)
+# Terminal 1 — API server (port from PORT in .env; default 3000)
 npm run dev:server
 
-# Terminal 2 — Vite dev server (port 5173)
+# Terminal 2 — Vite dev server (port from CLIENT_PORT in .env; default 5173)
 npm run dev:client
 ```
 
-Open [http://localhost:5173](http://localhost:5173). In dev mode, auth is skipped and the first seeded member is used as the current user.
+Set local ports in `.env` before running:
+
+```bash
+PORT=3000
+CLIENT_PORT=5173
+API_PORT=3000
+```
+
+- `PORT`: backend API listen port.
+- `CLIENT_PORT`: Vite dev server port.
+- `API_PORT`: where frontend proxies `/api` during local dev. Defaults to `PORT` if omitted.
+- `API_TARGET`: optional full proxy target (overrides `API_PORT`), useful if API runs on another host.
+
+Open `http://localhost:<CLIENT_PORT>`. In dev mode, auth is skipped and the first seeded member is used as the current user.
 
 ## Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `PORT` | Server port | No (default: `3000`) |
+| `CLIENT_PORT` | Vite dev server port | No (default: `5173`) |
+| `API_PORT` | Local API proxy target port used by Vite (`/api`) | No (default: `PORT` or `3000`) |
+| `API_TARGET` | Full local API proxy target used by Vite (`/api`) | No (default: `http://localhost:<API_PORT>`) |
 | `DB_PATH` | Absolute path to the SQLite database file | No (default: `crunchtime.db` in CWD) |
 | `CF_TEAM_DOMAIN` | Cloudflare Access team domain — enables JWT auth | No |
 
