@@ -9,7 +9,7 @@
     <string>/opt/homebrew/bin/cloudflared</string>
     <string>tunnel</string>
     <string>--config</string>
-    <string>/Users/mcotse/.cloudflared/crunchtime.yml</string>
+    <string>/Users/chums/.cloudflared/crunchtime.yml</string>
     <string>run</string>
     <string>crunchtime</string>
   </array>
@@ -18,8 +18,8 @@
   <key>KeepAlive</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>/Users/mcotse/Library/Logs/crunchtime-tunnel.log</string>
+  <string>/Users/chums/Library/Logs/crunchtime-tunnel.log</string>
   <key>StandardErrorPath</key>
-  <string>/Users/mcotse/Library/Logs/crunchtime-tunnel.log</string>
+  <string>/Users/chums/Library/Logs/crunchtime-tunnel.log</string>
 </dict>
 </plist>
