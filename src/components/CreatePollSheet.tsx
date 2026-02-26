@@ -44,8 +44,7 @@ export function CreatePollSheet({
   const isValid =
     title.trim() !== '' &&
     validOptions.length >= 2 &&
-    !hasDuplicates &&
-    options.every((o) => o.trim() !== '')
+    !hasDuplicates
 
   const handleClose = () => {
     if (hasContent) {
@@ -91,11 +90,13 @@ export function CreatePollSheet({
       return
     }
 
-    const pollOptions: PollOption[] = options.map((text) => ({
-      id: generateId(),
-      text: text.trim(),
-      voterIds: [],
-    }))
+    const pollOptions: PollOption[] = options
+      .filter((text) => text.trim() !== '')
+      .map((text) => ({
+        id: generateId(),
+        text: text.trim(),
+        voterIds: [],
+      }))
 
     const newPoll: Poll = {
       id: generateId(),
@@ -105,7 +106,7 @@ export function CreatePollSheet({
       creatorId: currentUserId,
       createdAt: new Date().toISOString(),
       expiresAt: expiresAt
-        ? new Date(expiresAt + 'T23:59:59-08:00').toISOString()
+        ? new Date(expiresAt + 'T23:59:59').toISOString()
         : undefined,
       isArchived: false,
       allowMembersToAddOptions,
@@ -324,7 +325,7 @@ export function CreatePollSheet({
                   className="w-full text-sm bg-transparent outline-none border-b-2 pb-2 border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white transition-colors dark:text-white dark:color-scheme-dark"
                 />
                 <p className="text-[11px] text-gray-400">
-                  Poll closes at end of day (PST).
+                  Poll closes at end of day (local time).
                 </p>
               </div>
             </div>

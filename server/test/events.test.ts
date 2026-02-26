@@ -175,6 +175,40 @@ describe('PATCH /api/events/:id — update', () => {
     expect(body.title).toBe('Updated Title')
   })
 
+  it('rejects invalid date format in PATCH with 400', async () => {
+    const app = await getApp()
+    const createRes = await app.request('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Date Val Test', date: '2026-05-01' }),
+    })
+    const created = await createRes.json() as any
+
+    const res = await app.request(`/api/events/${created.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: 'not-a-date' }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects invalid time format in PATCH with 400', async () => {
+    const app = await getApp()
+    const createRes = await app.request('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Time Val Test', date: '2026-05-01' }),
+    })
+    const created = await createRes.json() as any
+
+    const res = await app.request(`/api/events/${created.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ time: 'bad-time' }),
+    })
+    expect(res.status).toBe(400)
+  })
+
   it('rejects update by non-creator with 403', async () => {
     const app = await getApp()
     const { default: db } = await import('../db.js')

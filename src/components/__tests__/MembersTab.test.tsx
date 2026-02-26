@@ -39,6 +39,13 @@ describe('MembersTab', () => {
     expect(screen.getByText('-450.25')).toBeInTheDocument()
   })
 
+  it('displays actual email addresses, not placeholder text', () => {
+    render(<MembersTab members={members} />)
+    expect(screen.getByText('alice@example.com')).toBeInTheDocument()
+    expect(screen.getByText('bob@example.com')).toBeInTheDocument()
+    expect(screen.getByText('carol@example.com')).toBeInTheDocument()
+  })
+
   it('renders correctly with zero members', () => {
     render(<MembersTab members={[]} />)
     expect(screen.getByText('Group Members (0)')).toBeInTheDocument()

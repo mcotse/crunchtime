@@ -11,7 +11,11 @@ transactionsRouter.get('/', (c) => {
     SELECT id, description, amount, member_id as memberId, date, category, edit_history as editHistory, event_id as eventId
     FROM transactions ORDER BY date DESC, rowid DESC
   `).all() as Array<Record<string, unknown>>
-  return c.json(rows.map(r => ({ ...r, editHistory: JSON.parse(r.editHistory as string), eventId: r.eventId ?? null })))
+  return c.json(rows.map(r => {
+    let editHistory: unknown[]
+    try { editHistory = JSON.parse(r.editHistory as string) } catch { editHistory = [] }
+    return { ...r, editHistory, eventId: r.eventId ?? null }
+  }))
 })
 
 transactionsRouter.patch('/:id', async (c) => {
@@ -52,7 +56,9 @@ transactionsRouter.patch('/:id', async (c) => {
     FROM transactions WHERE id = ?
   `).get(id) as Record<string, unknown>
 
-  const result = { ...updated, editHistory: JSON.parse(updated.editHistory as string) }
+  let editHistory: unknown[]
+  try { editHistory = JSON.parse(updated.editHistory as string) } catch { editHistory = [] }
+  const result = { ...updated, editHistory }
   broadcastSSE('transaction_added', result)
   return c.json(result)
 })
