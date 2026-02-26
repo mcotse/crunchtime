@@ -49,6 +49,7 @@ All routes are mounted at `/api/transactions`.
 | GET | `/` | List all transactions (newest first) |
 | POST | `/` | Create a transaction |
 | PATCH | `/:id` | Update a transaction (partial) |
+| DELETE | `/:id` | Delete a transaction (admin only) |
 
 ### GET `/` — List
 
@@ -109,6 +110,10 @@ All fields are optional; only provided fields are updated.
 
 Returns `404` if the transaction ID does not exist. Returns `400` for validation failures.
 
+### DELETE `/:id` — Delete (admin only)
+
+Permanently removes the transaction. Returns `403` if the authenticated user is not an admin, `404` if the transaction does not exist. Broadcasts a `transaction_added` SSE event on success.
+
 ---
 
 ## Real-Time Updates
@@ -163,6 +168,7 @@ The AddTransactionSheet currently hardcodes `category: 'General'` for all new tr
 - **Amount sign** — the frontend toggles between income (+) and expense (-) via a segmented control; the sign is applied before submission.
 - **Amount input** — restricted to decimal numbers only (`/^\d*\.?\d*$/`); displayed with a `+$` or `-$` prefix depending on type.
 - **Inline editing** — a pencil icon appears on hover for each transaction row in the FeedTab. Tapping it opens AddTransactionSheet in edit mode with fields pre-populated.
+- **Delete** — a trash icon appears on hover for admin users next to the edit icon. Clicking opens a confirmation modal before permanently deleting the transaction.
 - **Edit mode** — AddTransactionSheet reads `editingTransaction` prop; when present the header changes to "Edit Transaction" and the CTA changes to "Update".
 - **Validation** — the form requires a positive amount and a non-empty description. On invalid submit, error states are shown and the first empty field is focused.
 - **Edit history badge** — when a transaction has edit history entries, the FeedTab shows a compact badge with the most recent edit's `editedBy` and `change` text.

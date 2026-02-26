@@ -9,6 +9,7 @@ import {
   ArchiveIcon,
   ArchiveRestoreIcon,
   CheckIcon,
+  Trash2Icon,
 } from 'lucide-react'
 import { Poll, PollOption } from '../data/pollsData'
 import { Member } from '../data/mockData'
@@ -23,6 +24,8 @@ interface PollDetailSheetProps {
   onAddOption: (pollId: string, text: string) => void
   onArchive: (pollId: string) => void
   onUnarchive: (pollId: string) => void
+  isAdmin?: boolean
+  onDelete?: (pollId: string, title: string) => void
 }
 
 function getPollStatus(poll: Poll): 'open' | 'closed' {
@@ -48,6 +51,8 @@ export function PollDetailSheet({
   onAddOption,
   onArchive,
   onUnarchive,
+  isAdmin,
+  onDelete,
 }: PollDetailSheetProps) {
   const [showOverflow, setShowOverflow] = useState(false)
   const [voterSheetOption, setVoterSheetOption] = useState<PollOption | null>(null)
@@ -162,7 +167,7 @@ export function PollDetailSheet({
                 )}
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
-                {canArchive && (
+                {(canArchive || isAdmin) && (
                   <div className="relative">
                     <button
                       onClick={() => setShowOverflow((v) => !v)}
@@ -179,7 +184,7 @@ export function PollDetailSheet({
                           transition={{ duration: 0.12 }}
                           className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-w-[160px] z-10"
                         >
-                          {poll.isArchived ? (
+                          {canArchive && (poll.isArchived ? (
                             <button
                               onClick={() => {
                                 onUnarchive(poll.id)
@@ -200,6 +205,18 @@ export function PollDetailSheet({
                             >
                               <ArchiveIcon size={15} />
                               Archive Poll
+                            </button>
+                          ))}
+                          {isAdmin && onDelete && (
+                            <button
+                              onClick={() => {
+                                onDelete(poll.id, poll.title)
+                                setShowOverflow(false)
+                              }}
+                              className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            >
+                              <Trash2Icon size={15} />
+                              Delete Poll
                             </button>
                           )}
                         </motion.div>

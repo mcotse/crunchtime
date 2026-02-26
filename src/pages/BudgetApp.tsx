@@ -17,6 +17,7 @@ import { DayDetailSheet } from '../components/DayDetailSheet';
 import { EventsTab } from '../components/EventsTab';
 import { EventDetailSheet } from '../components/EventDetailSheet';
 import { CreateEventSheet } from '../components/CreateEventSheet';
+import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import type { CalendarAvailability } from '../data/calendarData';
 
 export function BudgetApp() {
@@ -26,6 +27,8 @@ export function BudgetApp() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [groupName, setGroupName] = useState('Crunch Fund');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'transaction' | 'poll' | 'event'; id: string; title: string } | null>(null);
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     if (saved !== null) return saved === 'true';
@@ -73,13 +76,15 @@ export function BudgetApp() {
       fetchPolls(),
       fetchCalendar(),
       fetchEvents(),
-    ]).then(([membersData, txData, settingsData, pollsData, calendarData, eventsData]) => {
+      fetch('/api/me').then(r => r.ok ? r.json() : null),
+    ]).then(([membersData, txData, settingsData, pollsData, calendarData, eventsData, meData]) => {
       setMembers(membersData);
       setTransactions(txData);
       if (settingsData) setGroupName(settingsData.groupName);
       setPolls(pollsData);
       setCalendarAvailability(calendarData);
       setEvents(eventsData);
+      if (meData) setIsAdmin(!!meData.is_admin);
     });
   }, []);
 
@@ -313,6 +318,32 @@ export function BudgetApp() {
     }
   };
 
+  // --- Delete handlers ---
+  const handleRequestDelete = (type: 'transaction' | 'poll' | 'event', id: string, title: string) => {
+    setDeleteTarget({ type, id, title })
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return
+    const { type, id } = deleteTarget
+    const endpoint = type === 'transaction' ? 'transactions' : type === 'poll' ? 'polls' : 'events'
+    const res = await fetch(`/api/${endpoint}/${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      if (type === 'transaction') {
+        setTransactions(prev => prev.filter(t => t.id !== id))
+        const membersData = await fetch('/api/members').then(r => r.ok ? r.json() : [])
+        setMembers(membersData)
+      } else if (type === 'poll') {
+        setPolls(prev => prev.filter(p => p.id !== id))
+        if (selectedPoll?.id === id) { setIsPollDetailOpen(false); setSelectedPoll(null) }
+      } else {
+        setEvents(prev => prev.filter(e => e.id !== id))
+        if (selectedEvent?.id === id) { setIsEventDetailOpen(false); setSelectedEvent(null) }
+      }
+    }
+    setDeleteTarget(null)
+  }
+
   // PATCH group name; also update local state optimistically
   const handleGroupNameChange = async (name: string) => {
     setGroupName(name);
@@ -346,7 +377,7 @@ export function BudgetApp() {
 
           }
           {activeTab === 'activity' &&
-          <FeedTab transactions={transactions} members={members} onEdit={handleEditTransaction} />
+          <FeedTab transactions={transactions} members={members} onEdit={handleEditTransaction} isAdmin={isAdmin} onDelete={(id, title) => handleRequestDelete('transaction', id, title)} />
           }
           {activeTab === 'settings' &&
           <SettingsTab
@@ -442,7 +473,9 @@ export function BudgetApp() {
           onVote={handleVote}
           onAddOption={handleAddOption}
           onArchive={handleArchive}
-          onUnarchive={handleUnarchive} />
+          onUnarchive={handleUnarchive}
+          isAdmin={isAdmin}
+          onDelete={(id, title) => handleRequestDelete('poll', id, title)} />
 
         <DayDetailSheet
           dateStr={selectedCalendarDate}
@@ -462,7 +495,9 @@ export function BudgetApp() {
           onClose={() => setIsEventDetailOpen(false)}
           onRsvp={handleRsvp}
           onOpenPoll={handleOpenPollFromEvent}
-          onAddExpense={handleAddExpenseFromEvent} />
+          onAddExpense={handleAddExpenseFromEvent}
+          isAdmin={isAdmin}
+          onDelete={(id, title) => handleRequestDelete('event', id, title)} />
 
         <CreateEventSheet
           isOpen={isCreateEventOpen}
@@ -473,6 +508,12 @@ export function BudgetApp() {
           polls={polls}
           members={members} />
 
+        <ConfirmDeleteModal
+          isOpen={deleteTarget !== null}
+          title={`Delete ${deleteTarget?.type ?? ''}?`}
+          description={`"${deleteTarget?.title ?? ''}" will be permanently removed. This action cannot be undone.`}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setDeleteTarget(null)} />
       </div>
     </div>);
 

@@ -183,6 +183,21 @@ pollsRouter.post('/:id/options', async (c) => {
   return c.json(poll)
 })
 
+// DELETE /api/polls/:id — delete a poll (admin only)
+pollsRouter.delete('/:id', (c) => {
+  const member = c.get('member')
+  if (!member.is_admin) return c.json({ error: 'admin only' }, 403)
+
+  const pollId = c.req.param('id')
+  const row = db.prepare('SELECT id FROM polls WHERE id = ?').get(pollId)
+  if (!row) return c.json({ error: 'poll not found' }, 404)
+
+  // ON DELETE CASCADE handles poll_options and poll_votes
+  db.prepare('DELETE FROM polls WHERE id = ?').run(pollId)
+  broadcastSSE('poll_updated', { deleted: pollId })
+  return c.json({ ok: true })
+})
+
 // PATCH /api/polls/:id/archive — archive a poll
 pollsRouter.patch('/:id/archive', (c) => {
   const pollId = c.req.param('id')

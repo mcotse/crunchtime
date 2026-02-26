@@ -16,7 +16,8 @@ db.exec(`
     initials  TEXT NOT NULL,
     phone     TEXT NOT NULL,
     email     TEXT NOT NULL UNIQUE,
-    color     TEXT NOT NULL
+    color     TEXT NOT NULL,
+    is_admin  INTEGER NOT NULL DEFAULT 0
   );
 
   CREATE TABLE IF NOT EXISTS transactions (
@@ -97,6 +98,11 @@ if (!txCols.some(c => c.name === 'event_id')) {
 const pollCols = db.pragma('table_info(polls)') as Array<{ name: string }>
 if (!pollCols.some(c => c.name === 'event_id')) {
   db.exec('ALTER TABLE polls ADD COLUMN event_id TEXT REFERENCES events(id)')
+}
+
+const memberCols = db.pragma('table_info(members)') as Array<{ name: string }>
+if (!memberCols.some(c => c.name === 'is_admin')) {
+  db.exec('ALTER TABLE members ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0')
 }
 
 export default db

@@ -1,12 +1,14 @@
 import React from 'react';
 import { Transaction, Member } from '../data/mockData';
-import { Edit2Icon, PencilIcon } from 'lucide-react';
+import { Edit2Icon, PencilIcon, Trash2Icon } from 'lucide-react';
 interface FeedTabProps {
   transactions: Transaction[];
   members: Member[];
   onEdit: (transaction: Transaction) => void;
+  isAdmin?: boolean;
+  onDelete?: (id: string, title: string) => void;
 }
-export function FeedTab({ transactions, members, onEdit }: FeedTabProps) {
+export function FeedTab({ transactions, members, onEdit, isAdmin, onDelete }: FeedTabProps) {
   const getMember = (id: string) => members.find((m) => m.id === id);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -58,12 +60,22 @@ export function FeedTab({ transactions, members, onEdit }: FeedTabProps) {
                     <span>•</span>
                     <span>{formatDate(transaction.date)}</span>
                   </div>
-                  <button
-                    onClick={() => onEdit(transaction)}
-                    className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all text-gray-400 hover:text-black dark:hover:text-white -mr-1"
-                    aria-label="Edit transaction">
-                    <PencilIcon size={12} />
-                  </button>
+                  <div className="flex items-center gap-1 -mr-1">
+                    <button
+                      onClick={() => onEdit(transaction)}
+                      className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all text-gray-400 hover:text-black dark:hover:text-white"
+                      aria-label="Edit transaction">
+                      <PencilIcon size={12} />
+                    </button>
+                    {isAdmin && onDelete && (
+                      <button
+                        onClick={() => onDelete(transaction.id, transaction.description)}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all text-gray-400 hover:text-red-500"
+                        aria-label="Delete transaction">
+                        <Trash2Icon size={12} />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {transaction.editHistory &&
