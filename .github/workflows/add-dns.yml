@@ -1,0 +1,26 @@
+name: Add DNS Record (one-shot)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  add-cname:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add CNAME crunchtime -> crunchtime.pages.dev
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/a7be8f15e25db932dbe9a63cb6b2a91f/dns_records" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"CNAME","name":"crunchtime","content":"crunchtime.pages.dev","proxied":true}' \
+            | tee /tmp/result.json
+          python3 -c "
+          import json
+          d = json.load(open('/tmp/result.json'))
+          if d['success']:
+              r = d['result']
+              print(f'✅ Created: {r[\"name\"]} -> {r[\"content\"]}')
+          else:
+              print('❌ Failed:', d['errors'])
+              exit(1)
+          "

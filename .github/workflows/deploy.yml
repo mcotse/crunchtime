@@ -46,11 +46,6 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
-      - name: Install dependencies
-        run: |
-          cd /Users/mcotse/Developer/crunchtime
-          npm ci
-
       - name: Build server
         run: |
           cd /Users/mcotse/Developer/crunchtime
