@@ -201,12 +201,12 @@ export function SettingsTab({
       {/* Group name section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
 
           Group
         </h3>
         <div
-          className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
           <div className="flex items-center justify-between px-4 py-4">
             <span className={`text-sm font-medium ${textMuted}`}>Name</span>
@@ -254,12 +254,12 @@ export function SettingsTab({
       {/* Appearance */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
 
           Appearance
         </h3>
         <div
-          className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
           <div className="flex items-center justify-between px-4 py-4">
             <div className="flex items-center space-x-3">
@@ -354,12 +354,12 @@ export function SettingsTab({
       {/* Members section */}
       <div className="space-y-2">
         <h3
-          className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
 
           Group Members ({members.length})
         </h3>
         <div
-          className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
           {members.map((member) =>
           <div
@@ -367,7 +367,7 @@ export function SettingsTab({
             className={`flex items-center px-4 py-4 border-b last:border-0 ${divider}`}>
 
               <div
-              className="h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mr-3"
+              className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mr-4"
               style={{
                 backgroundColor: member.color
               }}>
@@ -401,12 +401,12 @@ export function SettingsTab({
       {settingsGroups.map((group, groupIndex) =>
       <div key={groupIndex} className="space-y-2">
           <h3
-          className={`text-xs font-semibold uppercase tracking-wider px-2 ${textMuted}`}>
+          className={`text-xs font-semibold uppercase tracking-widest px-2 ${textMuted}`}>
 
             {group.title}
           </h3>
           <div
-          className={`rounded-xl border overflow-hidden ${cardBg} ${cardBorder}`}>
+          className={`rounded-2xl border overflow-hidden ${cardBg} ${cardBorder}`}>
 
             {group.items.map((item, itemIndex) =>
           <button
