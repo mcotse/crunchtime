@@ -2,7 +2,19 @@ import { spawn, type ChildProcess } from 'node:child_process'
 import { execSync } from 'node:child_process'
 import { unlinkSync } from 'node:fs'
 
-export const E2E_URL = 'http://localhost:5173'
+function parsePort(value: string | undefined, fallback: number): number {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
+}
+
+const E2E_API_PORT = parsePort(
+  process.env.E2E_API_PORT ?? process.env.API_PORT ?? process.env.PORT,
+  3000,
+)
+const E2E_CLIENT_PORT = parsePort(process.env.E2E_CLIENT_PORT ?? process.env.CLIENT_PORT, 5173)
+const E2E_API_URL = `http://localhost:${E2E_API_PORT}`
+
+export const E2E_URL = `http://localhost:${E2E_CLIENT_PORT}`
 export const TEST_DB = '/tmp/crunchtime-e2e.db'
 
 let honoProc: ChildProcess | null = null
@@ -29,18 +41,18 @@ export async function setup(): Promise<void> {
     try { unlinkSync(TEST_DB + suffix) } catch { /* ok */ }
   }
 
-  // 1. Start Hono API server on port 3000
+  // 1. Start Hono API server
   honoProc = spawn(
     'npx',
     ['tsx', 'server/index.ts'],
     {
-      env: { ...process.env, DB_PATH: TEST_DB, PORT: '3000' },
+      env: { ...process.env, DB_PATH: TEST_DB, PORT: String(E2E_API_PORT) },
       stdio: 'pipe',
     },
   )
   honoProc.stderr?.on('data', (d) => process.stderr.write(d))
 
-  await waitForUrl('http://localhost:3000/api/members')
+  await waitForUrl(`${E2E_API_URL}/api/members`)
 
   // 2. Seed test data into the test DB
   execSync('npx tsx server/seed.ts', {
@@ -48,18 +60,22 @@ export async function setup(): Promise<void> {
     encoding: 'utf-8',
   })
 
-  // 3. Start Vite dev server on port 5173 (proxies /api → localhost:3000)
+  // 3. Start Vite dev server (proxies /api to configured API target)
   viteProc = spawn(
     'npx',
-    ['vite', '--port', '5173', '--strictPort'],
+    ['vite', '--strictPort'],
     {
-      env: { ...process.env },
+      env: {
+        ...process.env,
+        CLIENT_PORT: String(E2E_CLIENT_PORT),
+        API_PORT: String(E2E_API_PORT),
+      },
       stdio: 'pipe',
     },
   )
   viteProc.stderr?.on('data', (d) => process.stderr.write(d))
 
-  await waitForUrl('http://localhost:5173')
+  await waitForUrl(E2E_URL)
 }
 
 /** Vitest globalTeardown: kill servers + delete test DB. */
