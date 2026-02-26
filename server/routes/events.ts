@@ -51,6 +51,62 @@ eventsRouter.get('/', (c) => {
   return c.json(rows.map(serializeEvent))
 })
 
+// GET /api/events/:id/ics — download ICS calendar file
+eventsRouter.get('/:id/ics', (c) => {
+  const row = db.prepare('SELECT * FROM events WHERE id = ?').get(c.req.param('id')) as EventRow | undefined
+  if (!row) return c.json({ error: 'event not found' }, 404)
+
+  const uid = `${row.id}@crunchtime`
+  const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+
+  let dtStart: string
+  let dtEnd: string
+
+  if (row.time) {
+    const dateClean = row.date.replace(/-/g, '')
+    const timeClean = row.time.replace(/:/g, '')
+    dtStart = `DTSTART:${dateClean}T${timeClean}00Z`
+    // Compute end time by adding 1 hour, handling midnight rollover
+    const startDate = new Date(`${row.date}T${row.time}:00Z`)
+    startDate.setUTCHours(startDate.getUTCHours() + 1)
+    const endStamp = startDate.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+    dtEnd = `DTEND:${endStamp}`
+  } else {
+    const dateClean = row.date.replace(/-/g, '')
+    dtStart = `DTSTART;VALUE=DATE:${dateClean}`
+    const d = new Date(row.date + 'T00:00:00Z')
+    d.setUTCDate(d.getUTCDate() + 1)
+    const nextDay = d.toISOString().slice(0, 10).replace(/-/g, '')
+    dtEnd = `DTEND;VALUE=DATE:${nextDay}`
+  }
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Crunchtime//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${now}`,
+    dtStart,
+    dtEnd,
+    `SUMMARY:${row.title}`,
+    row.description ? `DESCRIPTION:${row.description.replace(/\n/g, '\\n')}` : '',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].filter(Boolean).join('\r\n') + '\r\n'
+
+  const filename = `${row.title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`
+
+  return new Response(ics, {
+    headers: {
+      'Content-Type': 'text/calendar; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+    },
+  })
+})
+
 // GET /api/events/:id — single event with linked data
 eventsRouter.get('/:id', (c) => {
   const row = db.prepare('SELECT * FROM events WHERE id = ?').get(c.req.param('id')) as EventRow | undefined

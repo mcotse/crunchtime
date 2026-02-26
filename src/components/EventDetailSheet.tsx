@@ -83,6 +83,14 @@ export function EventDetailSheet({
     }
   }, [isOpen, event?.id])
 
+  // Close overflow menu when clicking outside
+  useEffect(() => {
+    if (!showOverflow) return
+    const handler = () => setShowOverflow(false)
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [showOverflow])
+
   if (!event) return null
 
   const myRsvp = event.rsvps.find(r => r.memberId === currentUserId)
@@ -110,39 +118,48 @@ export function EventDetailSheet({
             <ArrowLeftIcon size={20} className="text-gray-700 dark:text-gray-300" />
           </button>
 
-          {/* Admin overflow menu */}
-          {isAdmin && onDelete && (
-            <div className="absolute top-4 right-4 z-10">
-              <button
-                onClick={() => setShowOverflow(v => !v)}
-                className="w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform"
-              >
-                <MoreHorizontalIcon size={20} className="text-gray-700 dark:text-gray-300" />
-              </button>
-              <AnimatePresence>
-                {showOverflow && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                    transition={{ duration: 0.12 }}
-                    className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-w-[160px]"
+          {/* Overflow menu */}
+          <div className="absolute top-4 right-4 z-10">
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowOverflow(v => !v) }}
+              className="w-10 h-10 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+            >
+              <MoreHorizontalIcon size={20} className="text-gray-700 dark:text-gray-300" />
+            </button>
+            <AnimatePresence>
+              {showOverflow && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                  transition={{ duration: 0.12 }}
+                  className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-w-[180px]"
+                >
+                  <a
+                    href={`/api/events/${event.id}/ics`}
+                    download
+                    onClick={() => setShowOverflow(false)}
+                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
+                    <CalendarIcon size={15} />
+                    Add to Calendar
+                  </a>
+                  {isAdmin && onDelete && (
                     <button
                       onClick={() => {
                         onDelete(event.id, event.title)
                         setShowOverflow(false)
                       }}
-                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
                     >
                       <Trash2Icon size={15} />
                       Delete Event
                     </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <div className="flex-1 overflow-y-auto">
             {/* Hero section */}
