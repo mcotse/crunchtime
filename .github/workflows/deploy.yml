@@ -38,7 +38,7 @@ jobs:
 
   deploy-backend:
     name: Rebuild and restart Hono server
-    runs-on: self-hosted
+    runs-on: [self-hosted, chums-macbook]
     steps:
       - name: Pull latest code
         run: |
